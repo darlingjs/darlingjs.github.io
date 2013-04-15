@@ -1,0 +1,140 @@
+{"frames": {
+
+"blue-sky.png":
+{
+	"frame": {"x":2,"y":2,"w":800,"h":600},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":800,"h":600},
+	"sourceSize": {"w":800,"h":600}
+},
+"cabriolet-body.png":
+{
+	"frame": {"x":804,"y":84,"w":140,"h":55},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":140,"h":55},
+	"sourceSize": {"w":140,"h":55}
+},
+"cabriolet-wheel.png":
+{
+	"frame": {"x":1000,"y":84,"w":22,"h":22},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":22,"h":22},
+	"sourceSize": {"w":22,"h":22}
+},
+"cloud-0.png":
+{
+	"frame": {"x":911,"y":438,"w":80,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":80,"h":64},
+	"sourceSize": {"w":80,"h":64}
+},
+"cloud-1.png":
+{
+	"frame": {"x":804,"y":141,"w":128,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":64},
+	"sourceSize": {"w":128,"h":64}
+},
+"cloud-2.png":
+{
+	"frame": {"x":804,"y":2,"w":212,"h":80},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":212,"h":80},
+	"sourceSize": {"w":212,"h":80}
+},
+"diamond-0.png":
+{
+	"frame": {"x":897,"y":504,"w":35,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":35,"h":32},
+	"sourceSize": {"w":35,"h":32}
+},
+"diamond-1.png":
+{
+	"frame": {"x":996,"y":386,"w":24,"h":23},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":24,"h":23},
+	"sourceSize": {"w":24,"h":23}
+},
+"fence-0.png":
+{
+	"frame": {"x":911,"y":386,"w":83,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":83,"h":50},
+	"sourceSize": {"w":83,"h":50}
+},
+"flowers-0.png":
+{
+	"frame": {"x":804,"y":207,"w":114,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":114,"h":64},
+	"sourceSize": {"w":114,"h":64}
+},
+"gas-0.png":
+{
+	"frame": {"x":854,"y":479,"w":41,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":41,"h":45},
+	"sourceSize": {"w":41,"h":45}
+},
+"grass-0.png":
+{
+	"frame": {"x":2,"y":604,"w":32,"h":400},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":400},
+	"sourceSize": {"w":32,"h":400}
+},
+"rail-road-0.png":
+{
+	"frame": {"x":946,"y":84,"w":52,"h":121},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":52,"h":121},
+	"sourceSize": {"w":52,"h":121}
+},
+"tools-0.png":
+{
+	"frame": {"x":804,"y":479,"w":48,"h":48},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":48},
+	"sourceSize": {"w":48,"h":48}
+},
+"tree-0.png":
+{
+	"frame": {"x":920,"y":207,"w":95,"h":177},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":95,"h":177},
+	"sourceSize": {"w":95,"h":177}
+},
+"tree-1.png":
+{
+	"frame": {"x":804,"y":273,"w":105,"h":204},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":105,"h":204},
+	"sourceSize": {"w":105,"h":204}
+}},
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "spritesheet.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:cd326564c8d2fccd68e17940fe408ca1$"
+}
+}
