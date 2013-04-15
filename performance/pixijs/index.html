@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>pixi.js example 3 using a movieclip</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #000000;
+		}
+	</style>
+	<script src="lib/pixi.js"></script>
+	<script src="lib/stats.js"></script>
+</head>
+<body>
+
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-38043860-3', 'github.com');
+	  ga('send', 'pageview');
+	</script>
+
+	<script>
+	var stats = new Stats();
+	stats.setMode(0); // 0: fps, 1: ms
+
+	// Align top-left
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.left = 0 + "px";
+	stats.domElement.style.top = 0 + "px";
+	document.body.appendChild( stats.domElement );
+
+	// create an array of assets to load
+	var assetsToLoader = [ "SpriteSheet.json"];
+	
+	// create a new loader
+	loader = new PIXI.AssetLoader(assetsToLoader);
+	
+	// use callback
+	loader.onComplete = onAssetsLoaded
+	
+	//begin load
+	loader.load();
+	
+	
+	// holder to store aliens
+	var explosions = [];
+	
+	var count = 0;
+		
+	// create an new instance of a pixi stage
+	var stage = new PIXI.Stage(0xFFFFFF);;
+	
+	// create a renderer instance.
+	renderer = PIXI.autoDetectRenderer(800, 600);
+
+	var rendererName = ''
+
+	if (renderer instanceof PIXI.WebGLRenderer) {
+		rendererName = 'WebGLRenderer';
+	} else if (renderer instanceof PIXI.CanvasRenderer) {
+		rendererName = 'Canvas';
+	} else {
+		rendererName = 'None';
+	}
+
+	//ga(['_setCustomVar',5, 'HTML5', supportedElements.join("|"), 1]);
+	console.log('Renderer is ', rendererName);
+	ga(['_setCustomVar',5, 'Renderer', rendererName, 1]);
+		
+	// add the renderer view element to the DOM
+	document.body.appendChild(renderer.view);
+	
+	function onAssetsLoaded()
+	{
+		// create an array to store the textures
+		var explosionTextures = [];
+		
+		for (var i=0; i < 26; i++) 
+		{
+		 	var texture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + ".png");
+		 	explosionTextures.push(texture);
+		};
+		
+		// create a texture from an image path
+		// add a bunch of aliens
+		for (var i = 0; i < 100; i++) 
+		{
+			// create an explosion MovieClip
+			var explosion = new PIXI.MovieClip(explosionTextures);
+			
+		
+			explosion.position.x = Math.random() * 800;
+			explosion.position.y = Math.random() * 600;
+			explosion.anchor.x = 0.5;
+			explosion.anchor.y = 0.5;
+			
+			explosion.rotation = Math.random() * Math.PI;
+			explosion.scale.x = explosion.scale.y = 0.75 + Math.random() * 0.5
+			
+			explosion.gotoAndPlay(Math.random() * 27);
+			
+			stage.addChild(explosion);
+		}
+		
+		// start animating
+		requestAnimFrame( animate );
+		
+		
+	}	
+
+	var fps = [];
+
+	var snapshotTimes = 5;
+
+	var takeSnapshotOnFrame = 150;
+
+	function animate() {
+		stats.begin();
+		
+		
+	    requestAnimFrame( animate );
+
+		var timePrevious = Date.now();
+
+	    renderer.render(stage);
+
+	    stats.end();
+
+	    if (--takeSnapshotOnFrame === 0) {
+	    	if (--snapshotTimes > 0) {
+	    		fps.push(takeSnapshot());
+	    		takeSnapshotOnFrame = 10;
+	    	} else {
+	    		var fpssum = 0;
+	    		for(var i = 0, l = fps.length; i < l; i++) {
+	    			fpssum += fps[i];
+	    		}
+	    		var avgfps = fpssum / fps.length;
+				console.log('avg FPS', avgfps);
+	    		ga(['_trackEvent', 'FPS', 'FPS', 'FPS', avgfps]);
+	    	}
+	    }
+	}
+
+	function takeSnapshot() {
+		var fps = stats.getFPS();
+		console.log('FPS', fps);
+		return fps;
+	}
+
+	</script>
+	</body>
+</html>
