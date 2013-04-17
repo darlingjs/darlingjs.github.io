@@ -495,7 +495,7 @@ vehicle(400, 500, 'cabriolet', {
     axleContainerHeight: 5,
     axleContainerDepth: 2.5,
     wheelRadius: 12,
-    wheelMaxSpeed: 15.0
+    wheelMaxSpeed: 25.0
 });
 
 world.$start();
