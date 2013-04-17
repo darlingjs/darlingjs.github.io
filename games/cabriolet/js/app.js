@@ -122,9 +122,9 @@ world.$add('ngPixijsSprite');
 world.$add('ngPixijsMovieClip');
 world.$add('ngPixijsSheetSprite');
 
-world.$add('ngBox2DDebugDraw', {
-    domID: 'gameView', width: width, height: height
-});
+//world.$add('ngBox2DDebugDraw', {
+//    domID: 'gameView', width: width, height: height
+//});
 
 world.$add('ngStatsEnd');
 
@@ -495,7 +495,7 @@ vehicle(400, 500, 'cabriolet', {
     axleContainerHeight: 5,
     axleContainerDepth: 2.5,
     wheelRadius: 12,
-    wheelMaxSpeed: 25.0
+    wheelMaxSpeed: 30.0
 });
 
 world.$start();
@@ -545,6 +545,9 @@ function hillGenerator(newTile, leftSeedTile, rightSeedTile, ops) {
     for (var j = startIndex; j < hillSliceWidth; j++) {
         var heightBegin = hillStartY + randomHeight * Math.cos(2*Math.PI/hillSliceWidth * j);
         var heightEnd = hillStartY + randomHeight * Math.cos(2*Math.PI/hillSliceWidth * (j + sign));
+
+        var angle = Math.atan(randomHeight / hillSliceWidth * Math.sin(2 * Math.PI/hillSliceWidth * j)) / (2 * Math.PI);
+
         var bottom = 0;
         var lowHeight = Math.min(heightBegin, heightEnd);
         var x = sign * j * pixelStep + xOffset;
@@ -598,6 +601,45 @@ function hillGenerator(newTile, leftSeedTile, rightSeedTile, ops) {
             }
         })));
 
+         entities.push(world.$add(world.$e('grass-top-0-' + x, {
+            'ng2D': {
+                x: x,
+                y: -lowHeight
+            },
+            'ng2DRotation': {
+                rotation: angle
+            },
+            'ngSpriteAtlas' : {
+                name: 'grass-top-0.png',
+                url: 'assets/spritesheet.json',
+                anchor: {
+                    x: 0.5,
+                    y: 0.5
+                }
+            }
+        })));
+
+        if (false) {
+            var topItemsIndex = Math.floor(topItems.length * Math.random());
+            entities.push(world.$add(world.$e('grass-top-0-' + x, {
+                'ng2D': {
+                    x: x,
+                    y: -lowHeight
+                },
+                'ng2DRotation': {
+                    rotation: angle
+                },
+                'ngSpriteAtlas' : {
+                    name: topItems[topItemsIndex],
+                    url: 'assets/spritesheet.json',
+                    anchor: {
+                        x: 0.5,
+                        y: 0.5
+                    }
+                }
+            })));
+        }
+
         var seed = Math.floor(100 * Math.random());
         if (seed < 10) {
                 entities.push(world.$add(world.$e('three-0-' + x, {
@@ -631,11 +673,11 @@ function hillGenerator(newTile, leftSeedTile, rightSeedTile, ops) {
                         }
                     }
                 })));
-        } else if (seed < 30) {
+        } else if (seed < 22) {
                 entities.push(world.$add(world.$e('fence-0-' + x, {
                     'ng2D': {
                         x: x,
-                        y: -lowHeight
+                        y: -lowHeight + 100 * Math.random() + 100
                     },
                     'ngSpriteAtlas' : {
                         name: 'fence-0.png',
@@ -733,6 +775,7 @@ function hillGenerator(newTile, leftSeedTile, rightSeedTile, ops) {
     newTile.rightHeight = yOffset;
 }
 
+var topItems = ['flower-2.png', 'stone-0.png', 'stone-1.png', 'stone-2.png', 'stone-4.png'];
 
 /**
  * Generate tile with straight line
