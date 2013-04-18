@@ -1,4 +1,6 @@
 darlingjs.github.com
 ====================
 
-Main Page
+![Logo](http://darlingjs.github.io/images/logo-oldschool.png)
+
+## Main Page
