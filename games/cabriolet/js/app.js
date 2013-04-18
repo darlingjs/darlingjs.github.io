@@ -122,9 +122,9 @@ world.$add('ngPixijsSprite');
 world.$add('ngPixijsMovieClip');
 world.$add('ngPixijsSheetSprite');
 
-//world.$add('ngBox2DDebugDraw', {
-//    domID: 'gameView', width: width, height: height
-//});
+world.$add('ngBox2DDebugDraw', {
+    domID: 'gameView', width: width, height: height
+});
 
 world.$add('ngStatsEnd');
 
