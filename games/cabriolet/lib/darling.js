@@ -1,5 +1,5 @@
 /**
- * @license darlingjs v0.0.1 2013-04-14 by Eugene Krevenets.
+ * @license darlingjs v0.0.1 2013-04-21 by Eugene Krevenets.
  * Component based game engine (entity system). Decoupled from any visualization, physics, and so on. With injections and modules based on AngularJS.
  * https://github.com/Hyzhak/darlingjs/
  *
@@ -1643,9 +1643,13 @@ World.prototype.$e = World.prototype.$entity = function() {
     } else if (isObject(arguments[componentsIndex])) {
         var components = arguments[componentsIndex];
         for (var key in components) {
-            if (components.hasOwnProperty(key)) {
+            if (components.hasOwnProperty(key) && key.charAt(0) !== '$') {
                 entity.$add(key, components[key]);
             }
+        }
+
+        if (isDefined(components.$name)) {
+            entity.$name = components.$name;
         }
     }
 

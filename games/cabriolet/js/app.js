@@ -4,11 +4,11 @@
  * Copyright (c) 2013, Eugene-Krevenets
  */
 
-var width = 800;
-var height = 600;
+var width = 640;
+var height = 480;
 
 var world = darlingjs.world('myGame', [
-    'ngModule',
+    'myApp',
     'ngCommon',
     'ngFlatland',
     'ngPhysics',
@@ -16,7 +16,9 @@ var world = darlingjs.world('myGame', [
     'ngPixijsAdapter',
     'ngStats',
     'ngInfinity1DWorld',
-    'ngPlayer'], {
+    'ngPlayer',
+    'ngParticleSystem'
+], {
     fps: 60
 });
 
@@ -31,7 +33,6 @@ world.$add('ng2DViewPort', {
     width: width,
     height: height
 });
-
 
 world.$add('ngBox2DSystem', {
     gravity: {
@@ -65,6 +66,7 @@ world.$add('ngFollowSelected', {
         y: -100.0
     }
 });
+
 world.$add('ngCollectBonuses');
 
 world.$add('ngRemoveSelectionFromWinner');
@@ -117,10 +119,35 @@ world.$add('ngInfinity1DWorld', {
     }
 });
 
-world.$add('ngPixijsStage', { domId: 'gameView', width: width, height: height });
+world.$add('ngBindPositionToPhysics');
+
+world.$add('ngBindLifeToAlpha');
+world.$add('ngPixijsStage', {
+    domId: 'gameView',
+    width: width,
+    height: height,
+    useWebGL: false
+});
 world.$add('ngPixijsSprite');
 world.$add('ngPixijsMovieClip');
 world.$add('ngPixijsSheetSprite');
+
+world.$add('ng2DShiftMovingSystem');
+
+world.$add('ngRandomEmitterSystem');
+world.$add('ngSquareEmitterSystem');
+world.$add('ngRectangleZone');
+
+world.$add('ngRemoveIfDead');
+world.$add('ngReduceLifeIfOutOfLifeZone');
+world.$add('ngDeadIfOutOfLife');
+world.$add('ngLifeIsGrooving');
+world.$add('ngDecreaseLifeOnDamage');
+world.$add('ngDecreaseLifeOnContinuousDamage');
+
+world.$add('ngLockOnViewPortOnShiftToIt');
+
+world.$add('ngLifeHandler');
 
 world.$add('ngBox2DDebugDraw', {
     domID: 'gameView', width: width, height: height
@@ -132,7 +159,8 @@ world.$add('ngStatsEnd');
 
 // test heap of rocks
 
-for (var i = 0, l = 50; i < l; i++) {
+var rocksCount = 0;
+for (var i = 0, l = rocksCount; i < l; i++) {
     var fixed = Math.random() > 0.5;
     var boxType = Math.floor(1 + 3 * Math.random());
     var box = world.$add(world.$e('obstacle_' + i, {
@@ -253,9 +281,34 @@ function vehicle(x, y, name, newOps){
                 {
                     'any': ['ngBonus'],
                     'andGet': 'ngGetBonus'
+                },
+                {
+                    'any': ['drop'],
+                    'andGet': {
+                        'ngDamage': {
+                            damage: 0.1
+                        }
+                    }
+                },
+                {
+                    'any': ['cloudsFront'],
+                    'andGet': {
+                        'ngContinuousDamage': {
+                            damage: 0.5
+                        }
+                    }
                 }
             ]
         },
+        'ngLife': {
+            life: 1.0
+        },
+        'ngOnLifeChange': {
+            handler: function($node, life) {
+                console.log('life:' + life);
+            }
+        },
+        'ngLive': {},
         'ngSpriteAtlas' : {
             name: name + '-body.png',
             url: 'assets/spritesheet.json',
@@ -462,33 +515,264 @@ world.$add(
     })
 );
 
-function addCloud(ops) {
-    world.$add(
-        world.$e('cloud', {
-            'ng2D': {
-                x: ops.x,
-                y: ops.y
-            },
-            'ngSpriteAtlas' : {
-                name: 'cloud-' + ops.type + '.png',
-                url: 'assets/spritesheet.json',
-                fitToSize: false
-            },
-            'ngParallax': {
-                basis: ops.basis
-            }
-        })
-    );
-}
+var frontStart = 200.0,
+    frontSpeed = 40.0;
 
-for(var i = 0, count = 20; i < count; i++ ) {
-    addCloud({
-        x: 500.0 + Math.random() * 2000,
-        y: 500.0 + Math.random() * 200,
-        basis: 0.2 + 0.4 * Math.random(),
-        type: Math.floor(3 * Math.random())
-    });
-}
+world.$add(world.$e(
+    'doom-sky', {
+        'ng2D': {
+            x: frontStart - 400.0,
+            y: 0.0
+        },
+
+        'ngShiftMove': {
+            dx: frontSpeed,
+            dy: 0.0
+        },
+
+        'ngLockOnViewPortOnShiftToIt': {
+            entitiesToRemove: ['clouds-front', 'clouds-factory', 'sky']
+        },
+
+        'ngSpriteAtlas' : {
+            name: 'doom.png',
+            url: 'assets/spritesheet.json',
+            fitToSize: false,
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            }
+        },
+
+        'ngLockViewPort': {
+            lockX: false,
+            lockY: true
+        }
+    }
+));
+
+world.$add(world.$e(
+    'clouds-front-sensor', {
+        'cloudsFront': {},
+
+        'ng2D': {
+            x: frontStart - 200,
+            y: 500.0
+        },
+
+        'ng2DSize': {
+            width: 10,
+            height: 480
+        },
+
+        'ngPhysic': {},
+
+        'ngSensor': {},
+
+        'ngBindPositionToPhysics': {},
+
+        'ngShiftMove': {
+            dx: frontSpeed,
+            dy: 0.0
+        }
+    }
+));
+
+world.$add(world.$e(
+    'clouds-front', {
+        'ng2D': {
+            x: frontStart - 3,
+            y: 0.0
+        },
+
+        'ngShiftMove': {
+            dx: frontSpeed,
+            dy: 0.0
+        },
+
+        'ngSpriteAtlas' : {
+            name: 'doom-front.png',
+            url: 'assets/spritesheet.json',
+            fitToSize: false,
+            anchor: {
+                x: 0.0,
+                y: 0.5
+            }
+        },
+
+        'ngLockViewPort': {
+            lockX: false,
+            lockY: true
+        }
+    }
+));
+
+world.$add(
+    world.$e('clouds-factory', {
+        'ng2D': {
+            x: frontStart,
+            y: 275.0
+        },
+
+        'ng2DSize': {
+            width: 1.0,
+            height: 200.0
+        },
+
+        'ngShiftMove': {
+            dx: frontSpeed,
+            dy: 0.0
+        },
+
+        'ngEmitterRandomCounter': {
+            minRate: 0.75,
+            maxRate: 2.0
+        },
+
+        'ngEmitter': {
+            generate: function(emitter) {
+                var edge = width;
+                var distance = Math.random();
+                var ops = {
+                    move: { dx: 100 * (0.2 + 0.4 * distance) },
+                    basis: 0.2 + 0.4 * distance,
+                    type: Math.floor(3 * Math.random())
+                };
+
+                return {
+                    $name: 'cloud',
+
+                    'ng2D': {},
+
+                    'ng2DSize': {
+                        width: 60.0,
+                        height: 1.0
+                    },
+
+                    'ngSpriteAtlas' : {
+                        name: 'cloud-' + ops.type + '.png',
+                        url: 'assets/spritesheet.json',
+                        fitToSize: false
+                    },
+
+                    'ngParallax': {
+                        basis: 1.0//ops.basis
+                    },
+
+                    'ngShiftMove': {
+                        dx: ops.move.dx || 0.0,
+                        dy: ops.move.dy || 0.0
+                    },
+
+                    'ngRemoveIfDead': {},
+
+                    'ngLifeZone': {},
+
+                    'ngLife': {
+                        life: 0.01
+                    },
+
+                    'ngLifeIsGrooving': {
+                        delta: 0.1
+                    },
+
+                    'ngBindLifeToAlpha': {},
+
+                    'ngLive': {},
+
+                    'ngRectangleZone': {
+                        left: -edge + emitter.ng2D.x,
+                        right: edge + emitter.ng2D.x,
+                        top:  -edge + emitter.ng2D.y,
+                        bottom:edge + emitter.ng2D.y
+                    },
+
+                    'ngEmitterRandomCounter': {
+                        minRate: 0.0,
+                        maxRate: 1.0
+                    },
+
+                    'ngEmitter': {
+                        generate: function(emitter) {
+                            if (Math.random() > 0.95) {
+                                var lightningType = Math.floor(2 * Math.random());
+                                return {
+                                    '$name': 'lightning-of-' + emitter.$name,
+                                    'ng2D': {x : emitter.ng2D.x, y: emitter.ng2D.y},
+                                    'ngSpriteAtlas' : {
+                                        name: 'lightning-' + lightningType + '.png',
+                                        url: 'assets/spritesheet.json',
+                                        fitToSize: false
+                                    },
+
+                                    'ngLife': {
+                                        life: 1.0
+                                    },
+
+                                    'ngLifeIsGrooving': {
+                                        delta: -1.0
+                                    },
+
+                                    'ngBindLifeToAlpha': {},
+
+                                    'ngLive': {},
+
+                                    'ngRemoveIfDead': {}
+                                };
+                            } else {
+                                return {
+                                    '$name': 'drop-of-' + emitter.$name,
+
+                                    'drop': {},
+
+                                    'ng2D': {x : emitter.ng2D.x, y: emitter.ng2D.y},
+
+                                    'ng2DCircle': {radius: 3},
+
+                                    'ng2DRotation': {},
+
+                                    'ngPhysic': {
+                                        density: 2.0
+                                    },
+                                    'ngDraggable': {},
+
+                                    'ngSpriteAtlas' : {
+                                        name: 'drop.png',
+                                        url: 'assets/spritesheet.json',
+                                        fitToSize: false
+                                    },
+
+                                    'ngLife': {
+                                        life: 0.01
+                                    },
+
+                                    'ngLifeIsGrooving': {
+                                        delta: 0.2
+                                    },
+
+                                    'ngBindLifeToAlpha': {},
+
+                                    'ngLive': {},
+
+                                    'ngRemoveIfDead': {},
+
+                                    'ngWantsToCollide': {
+                                        'with': [
+                                            {
+                                                'andGet': 'ngDead'
+                                            }
+                                        ]
+                                    }
+                                };
+                            }
+                        }
+                    }
+                };
+            }
+        }
+    })
+);
+
 
 vehicle(400, 500, 'cabriolet', {
     axleContainerDistance: 30,

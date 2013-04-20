@@ -163,6 +163,20 @@ m.$c('ngPixijsSprite', {
     sprite: null
 });
 
+m.$c('ngBindLifeToAlpha', {
+    min: 0.0,
+    max: 1.0
+});
+
+m.$s('ngBindLifeToAlpha', {
+    $require: ['ngBindLifeToAlpha', 'ngLife', 'ngPixijsSprite'],
+
+    $update: ['$node', function($node) {
+        var sprite = $node.ngPixijsSprite.sprite;
+        sprite.alpha = $node.ngBindLifeToAlpha.min + $node.ngLife.life * ($node.ngBindLifeToAlpha.max - $node.ngBindLifeToAlpha.min);
+    }]
+});
+
 m.$s('ngPixijsStage', {
     width: 640,
     height: 480,
@@ -229,8 +243,11 @@ m.$s('ngPixijsStage', {
         sprite.sprite.position.x = ng2D.x + this._center.x;
         sprite.sprite.position.y = ng2D.y + this._center.y;
 
-        if (!$node.ngLockViewPort) {
+        if (!($node.ngLockViewPort && $node.ngLockViewPort.lockX)) {
             sprite.sprite.position.x -= ng2DViewPort.lookAt.x;
+        }
+
+        if (!($node.ngLockViewPort && $node.ngLockViewPort.lockY)) {
             sprite.sprite.position.y -= ng2DViewPort.lookAt.y;
         }
 

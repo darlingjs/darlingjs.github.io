@@ -58,6 +58,7 @@
             var ng2DPolygon = $node.ng2DPolygon;
 
             var bodyDef = new Box2D.b2BodyDef();
+
             switch(ngPhysic.type) {
                 case 'static':
                     bodyDef.set_type(Box2D.b2_staticBody);
@@ -142,17 +143,41 @@
             }
         }],
 
+        _arrayOfBodyToRemoveAfterUnlock: [],
+        _arrayOfFixtureToRemoveAfterUnlock: [],
+
+        _removeAllBody: function(array) {
+            for(var i = 0, count = array.length; i < count; i++) {
+                this._world.DestroyBody(array[i]);
+            }
+        },
+
+        _removeAllFixtures: function(array) {
+            for(var i = 0, count = array.length; i < count; i++) {
+                var fixture = array[i];
+                fixture.GetBody().DestroyFixture(fixture);
+            }
+        },
+
         $removeNode: function($node) {
             var body = $node.ngPhysic._b2dBody;
             if (this._isEntityOwnBox2DBody($node)) {
                 if (darlingutil.isDefined(body)) {
-                    this._world.DestroyBody(body);
-                    $node.ngPhysic._b2dBody = null;
+                    if (this._world.IsLocked()) {
+                        this._arrayOfBodyToRemoveAfterUnlock.push(body);
+                    } else {
+                        this._world.DestroyBody(body);
+                        $node.ngPhysic._b2dBody = null;
+                    }
                 }
             } else if (this._isEntityOwnBox2DFixture($node)) {
                 var fixture = $node.ngPhysic._b2dFixture;
                 if (darlingutil.isDefined(fixture) && darlingutil.isDefined(body)) {
-                    body.DestroyFixture(fixture);
+                    if (this._world.IsLocked()) {
+                        this._arrayOfFixtureToRemoveAfterUnlock.push(fixture);
+                    } else {
+                        body.DestroyFixture(fixture);
+                    }
                 }
             }
         },
@@ -182,13 +207,24 @@
                 this.positionIterations  //position iterations
             );
 
+            if (!this._world.IsLocked()) {
+                this._removeAllBody(this._arrayOfBodyToRemoveAfterUnlock);
+                this._arrayOfBodyToRemoveAfterUnlock.length = 0;
+
+                this._removeAllFixtures(this._arrayOfFixtureToRemoveAfterUnlock);
+                this._arrayOfFixtureToRemoveAfterUnlock.length = 0;
+            } else {
+                throw new Error('unexpected behaviour');
+            }
+
             $nodes.forEach(this.$$updateNodePosition);
             this._world.ClearForces();
         }],
 
         $$updateNodePosition: function($node) {
             var body = $node.ngPhysic._b2dBody;
-            if (!body) {
+            //TODO : need to create separate component - ngBindPhysicsToPosition
+            if (!body || $node.ngPhysic.type === 'static' || $node.ngBindPositionToPhysics) {
                 return;
             }
             var pos = body.GetPosition();
@@ -1331,26 +1367,56 @@
      * @param entityB
      */
     function addContactComponent(rule, entityA, entityB) {
-        var component = entityA[rule.andGet];
+        if (darlingutil.isString(rule.andGet)) {
+            addOneByOneContactComponent(rule.andGet, null, entityA, entityB);
+        } else if(darlingutil.isObject(rule.andGet)) {
+            var components = rule.andGet;
+            for(var key in components) {
+                if (components.hasOwnProperty(key)) {
+                    addOneByOneContactComponent(key, components[key], entityA, entityB);
+                }
+            }
+        }
+        //console.log(entityA.$name + ' get ' + rule.andGet + ' with ' + entityB.$name);
+    }
+
+    function addOneByOneContactComponent(componentName, config, entityA, entityB) {
+        var component = entityA[componentName];
+
         if (!component) {
-            entityA.$add(rule.andGet, {
-                'entities': [entityB]
-            });
+            config = config || {};
+            config.entities = [entityB];
+            entityA.$add(componentName, config);
         } else {
             component.entities.push(entityB);
         }
-        console.log(entityA.$name + ' get ' + rule.andGet + ' with ' + entityB.$name);
     }
 
     function removeContactComponent(rule, entityA, entityB) {
-        var component = entityA[rule.andGet];
+        if (darlingutil.isString(rule.andGet)) {
+            removeOneByOneContactComponent(rule.andGet, entityA, entityB);
+        } else if (darlingutil.isObject(rule.andGet)) {
+            var components = rule.andGet;
+            for(var key in components) {
+                if (components.hasOwnProperty(key)) {
+                    removeOneByOneContactComponent(key, entityA, entityB);
+                }
+            }
+        }
+        //console.log(entityA.$name + ' lose ' + rule.andGet + ' with ' + entityB.$name);
+    }
+
+    function removeOneByOneContactComponent(componentName, entityA, entityB) {
+        var component = entityA[componentName];
+        if (darlingutil.isUndefined(component)) {
+            return;
+        }
         var entities = component.entities;
         var index = entities.indexOf(entityB);
         entities.splice(index, 1);
         if (entities.length <= 0) {
-            entityA.$remove(rule.andGet);
+            entityA.$remove(componentName);
         }
-        console.log(entityA.$name + ' lose ' + rule.andGet + ' with ' + entityB.$name);
     }
 
     function endContact(entityA, entityB, collision) {
@@ -1478,5 +1544,30 @@
             var ngPhysic = $node.ngPhysic;
 //            TODO: remove groupIndex from and clear groupNode
         }
+    });
+
+    m.$c('ngBindPositionToPhysics');
+
+    m.$s('ngBindPositionToPhysics', {
+        $require: ['ngBindPositionToPhysics', 'ngPhysic', 'ng2D'],
+
+        $addNode: function($node) {
+            $node.ngPhysic.type = 'kinematic';
+            var body = $node.ngPhysic._b2dBody;
+            if (body) {
+                body.SetType(Box2D.b2_kinematicBody);
+            }
+        },
+
+        $update: ['$node', 'ngBox2DSystem', function($node, ngBox2DSystem) {
+            if (!ngBox2DSystem) {
+                return;
+            }
+            var body = $node.ngPhysic._b2dBody;
+            var currentPosition = body.GetPosition();
+            var dx = ngBox2DSystem._invScale * $node.ng2D.x - currentPosition.get_x();
+            var dy = ngBox2DSystem._invScale * $node.ng2D.y - currentPosition.get_y();
+            body.SetLinearVelocity(new Box2D.b2Vec2(dx, dy));
+        }]
     });
 })(darlingjs, darlingutil);
