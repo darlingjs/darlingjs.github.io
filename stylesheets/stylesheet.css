@@ -293,12 +293,12 @@ Full-Width Styles
 }
 
 #header_wrap {
-  background: #212121;
-  background: -moz-linear-gradient(top, #373737, #212121);
-  background: -webkit-linear-gradient(top, #373737, #212121);
-  background: -ms-linear-gradient(top, #373737, #212121);
-  background: -o-linear-gradient(top, #373737, #212121);
-  background: linear-gradient(top, #373737, #212121);
+  background: #0b7685;
+  background: -moz-linear-gradient(top, #0b7685, #212121);
+  background: -webkit-linear-gradient(top, #0b7685, #212121);
+  background: -ms-linear-gradient(top, #0b7685, #212121);
+  background: -o-linear-gradient(top, #0b7685, #212121);
+  background: linear-gradient(top, #0b7685, #212121);
 }
 
 #header_wrap .inner {
@@ -428,4 +428,12 @@ Small Device Styles
     font-size: 11px;
   }
 
+}
+
+.center {
+    text-align: center;
+}
+
+.darlingjs-logo{
+    width:400px !important; border: 0px !important; box-shadow: 0 0 !important;
 }
