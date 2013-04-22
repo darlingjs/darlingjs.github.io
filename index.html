@@ -54,8 +54,9 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <p>Current state is under active developing. <a href="http://pressanykeytocreate.blogspot.com/2013/04/anons-of-darlingjs-and-red-cabriolet.html">All comments and feedback are welcome.</a></p>
-        <h3>v0.0.1</h3>
-          <h4>Core</h4>
+        <h3>Release Notes</h3>
+        <h4>v0.0.1</h4>
+          <h5>Core</h5>
           <div>
             <ul>
               <li>Entities, Components, Systems like in <a href="http://ashframework.org">Ash</a> by <a href="https://github.com/richardlord/" class="user-mention">@richardlord</a></li>
@@ -64,7 +65,7 @@
               <li>Covered by tests <a href="http://pivotal.github.com/jasmine/">Jasmine</a>, <a href="https://travis-ci.org/darlingjs/darlingjs/">TravisCI</a>, <a href="http://gruntjs.com/">GruntJS</a></li>
             </ul>
           </div>
-          <h4>Pluggable Modules</h4>
+          <h5>Pluggable Modules</h5>
           <div>
             <ul>
               <li>Physics <a href="https://github.com/kripken/box2d.js">Emscripten Box2D 2.2.1</a> by <a href="http://box2d.org">Erin Catto</a> and <a href="https://github.com/kripken/" class="user-mention">@kripken</a></li>
@@ -91,17 +92,18 @@
             </ul>
           </div>
           <h4>Modules for</h4>
-          <p>
+          <div>
             <ul>
-              <li>AnuglarJS integration</li>
               <li>AI</li>
+              <li>AnuglarJS integration</li>
+              <li><a href="http://createjs.com/#!/EaselJS">EaselJS</a></li>
+              <li><a href="http://flashjs.com">FlashJS</a></li>
+              <li><a href="http://leapmotion.com">Leap Motion</a> support</li>
               <li><a href="http://napephys.com">Nape Physics</a></li>
               <li>Particle System</li>
               <li>Sound</li>
-              <li><a href="http://flashjs.com">FlashJS</a></li>
-              <li><a href="http://createjs.com/#!/EaselJS">EaselJS</a></li>
             </ul>
-          </p>
+          </div>
         <h3>Example</h3>
         <div>
           <ul>
@@ -124,15 +126,20 @@
       </footer>
     </div>
 
-    <script type="text/javascript">
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-      try {
-        var pageTracker = _gat._getTracker("UA-38043860-3");
-      pageTracker._trackPageview();
-      } catch(err) {}
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-38043860-3', 'github.io');
+      ga('send', 'pageview');
+
+      window.onerror = function(msg, url, line) {
+          var preventErrorAlert = true;
+          ga('_trackEvent', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line, 0, true);
+          return preventErrorAlert;
+      };
     </script>
 
     <!--Social Code -->
