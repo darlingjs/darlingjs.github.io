@@ -626,7 +626,7 @@ function buildCloudFront(ops) {
                         var edge = width;
                         var distance = Math.random();
                         var ops = {
-                            move: { dx: 100 * (0.2 + 0.4 * distance) },
+                            move: { dx: emitter.ngShiftMove.dx + 40 * distance },
                             basis: 0.2 + 0.4 * distance,
                             type: Math.floor(3 * Math.random())
                         };
@@ -724,7 +724,7 @@ function buildCloudFront(ops) {
                                             'ng2DRotation': {},
 
                                             'ngPhysic': {
-                                                density: 2.0
+                                                density: 4.0
                                             },
                                             'ngDraggable': {},
 
