@@ -58,6 +58,7 @@
  */
 
 var darlingutil = window.darlingutil = window.darlingutil||{};
+darlingutil.version = '0.0.3';
 
 (function() {
     'use strict';
@@ -917,6 +918,7 @@ function factoryOfFastFunctionWithMatcher(fn, context, args, argsMatcher) {
  */
 
 var darlingjs = window.darlingjs || (window.darlingjs = {});
+darlingjs.version = '0.0.3';
 
 var worlds = {};
 var modules = {};
