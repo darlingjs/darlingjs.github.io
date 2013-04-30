@@ -57,8 +57,28 @@
  * Get From AngularJS Project with little changes based on JSHint.
  */
 
-var darlingutil = window.darlingutil = window.darlingutil||{};
+var _darlingutil = window.darlingutil,
+    darlingutil = window.darlingutil = window.darlingutil||{};
+
 darlingutil.version = '0.0.3';
+
+/**
+ * @ngdoc function
+ * @name darlingutil.noConflict
+ * @function
+ *
+ * @description
+ * Restores the previous global value of darlingutil and returns the current instance. Other libraries may already use the
+ * darlingutil namespace. Or a previous version of darlingutil is already loaded on the page. In these cases you may want to
+ * restore the previous namespace and keep a reference to darlingutil.
+ *
+ * @return {Object} The current darlingutil namespace
+ */
+darlingutil.noConflict = function() {
+    var a = window.darlingutil;
+    window.darlingutil = _darlingutil;
+    return a;
+};
 
 (function() {
     'use strict';
@@ -917,8 +937,27 @@ function factoryOfFastFunctionWithMatcher(fn, context, args, argsMatcher) {
  * @module core
  */
 
+var _darlingjs = window.darlingjs;
 var darlingjs = window.darlingjs || (window.darlingjs = {});
 darlingjs.version = '0.0.3';
+
+/**
+ * @ngdoc function
+ * @name darlingjs.noConflict
+ * @function
+ *
+ * @description
+ * Restores the previous global value of darlingjs and returns the current instance. Other libraries may already use the
+ * darlingjs namespace. Or a previous version of darlingjs is already loaded on the page. In these cases you may want to
+ * restore the previous namespace and keep a reference to darlingjs.
+ *
+ * @return {Object} The current darlingjs namespace
+ */
+darlingjs.noConflict = function() {
+    var a = window.darlingjs;
+    window.darlingjs = _darlingjs;
+    return a;
+};
 
 var worlds = {};
 var modules = {};
