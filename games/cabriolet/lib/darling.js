@@ -1,5 +1,5 @@
 /**
- * @license darlingjs v0.0.4 2013-04-30 by Eugene Krevenets.
+ * @license darlingjs v0.0.4 2013-05-02 by Eugene Krevenets.
  * Component & Entity based javascript game engine. Decoupled from any visualization, physics, and so on. With injections and modules based on AngularJS.
  * http://darlingjs.github.io/
  *
@@ -57,8 +57,28 @@
  * Get From AngularJS Project with little changes based on JSHint.
  */
 
-var darlingutil = window.darlingutil = window.darlingutil||{};
+var _darlingutil = window.darlingutil,
+    darlingutil = window.darlingutil = window.darlingutil||{};
+
 darlingutil.version = '0.0.4';
+
+/**
+ * @ngdoc function
+ * @name darlingutil.noConflict
+ * @function
+ *
+ * @description
+ * Restores the previous global value of darlingutil and returns the current instance. Other libraries may already use the
+ * darlingutil namespace. Or a previous version of darlingutil is already loaded on the page. In these cases you may want to
+ * restore the previous namespace and keep a reference to darlingutil.
+ *
+ * @return {Object} The current darlingutil namespace
+ */
+darlingutil.noConflict = function() {
+    var a = window.darlingutil;
+    window.darlingutil = _darlingutil;
+    return a;
+};
 
 (function() {
     'use strict';
@@ -418,7 +438,6 @@ function copy(source, destination, deleteAllDestinationProperties){
     }
     return destination;
 }
-
 
 /**
  * @ngdoc function
@@ -1022,8 +1041,27 @@ darlingutil.wipe = function (obj) {
  * @module core
  */
 
+var _darlingjs = window.darlingjs;
 var darlingjs = window.darlingjs || (window.darlingjs = {});
 darlingjs.version = '0.0.4';
+
+/**
+ * @ngdoc function
+ * @name darlingjs.noConflict
+ * @function
+ *
+ * @description
+ * Restores the previous global value of darlingjs and returns the current instance. Other libraries may already use the
+ * darlingjs namespace. Or a previous version of darlingjs is already loaded on the page. In these cases you may want to
+ * restore the previous namespace and keep a reference to darlingjs.
+ *
+ * @return {Object} The current darlingjs namespace
+ */
+darlingjs.noConflict = function() {
+    var a = window.darlingjs;
+    window.darlingjs = _darlingjs;
+    return a;
+};
 
 var worlds = {};
 var modules = {};
@@ -1139,10 +1177,12 @@ darlingjs.removeAllWorlds = function() {
  */
 
 var Entity = function() {
-    this.$$components = {};
-    this.$$world = null;
     mixin(this, Events);
 };
+
+Entity.prototype.$name = '';
+
+Entity.prototype.$$world = null;
 
 Entity.prototype.$add = function(value, config) {
     var instance;
@@ -1168,8 +1208,6 @@ Entity.prototype.$add = function(value, config) {
         this.$remove(name);
     }
 
-    this.$$components[name] = instance;
-
     this[name] = instance;
 
     this.trigger('add', this, instance);
@@ -1184,7 +1222,7 @@ Entity.prototype.$remove = function(value) {
         instance = value;
     } else if (isString(value)) {
         name = value;
-        instance = this.$$components[value];
+        instance = this[value];
     } else {
         throw new Error('Can\'t remove from component ' + value);
     }
@@ -1193,8 +1231,9 @@ Entity.prototype.$remove = function(value) {
         return;
     }
 
-    delete this.$$components[name];
-    delete this[name];
+    //nullity optimization
+    //delete this[name];
+    this[name] = null;
 
     this.trigger('remove', this, instance);
 
@@ -1203,9 +1242,9 @@ Entity.prototype.$remove = function(value) {
 
 Entity.prototype.$has = function(value) {
     if (isComponent(value)) {
-        return isDefined(this.$$components[value.$name]);
+        return !!this[value.$name];
     } else {
-        return isDefined(this.$$components[value]);
+        return !!this[value];
     }
 };
 
@@ -1370,7 +1409,6 @@ List.prototype.remove = function(instance) {
     }
 
     node.dispose(instance, this.PROPERTY_LINK_TO_NODE);
-    poolOfListNodes.dispose(node);
 
     this.trigger('remove', instance);
 
@@ -1383,14 +1421,21 @@ List.prototype.length = function() {
 };
 
 List.prototype.forEach = function(callback, context, arg) {
-    context = context || this;
     if (!isFunction(callback)) {
         return;
     }
+
     var node = this._head;
-    while(node) {
-        callback.call(context, node.instance, arg);
-        node = node.$next;
+    if (context) {
+        while(node) {
+            callback.call(context, node.instance, arg);
+            node = node.$next;
+        }
+    } else {
+        while(node) {
+            callback(node.instance, arg);
+            node = node.$next;
+        }
     }
 };
 
@@ -1400,6 +1445,7 @@ var ListNode = function(instance, linkBack) {
     }
 };
 
+ListNode.prototype.instance = null;
 ListNode.prototype.$next = null;
 ListNode.prototype.$prev = null;
 
@@ -1411,7 +1457,10 @@ ListNode.prototype.init = function(instance, linkBack) {
     }
 
     this.instance = instance;
-    if (instance.hasOwnProperty(linkBack)) {
+
+    //optimization
+    //if (instance.hasOwnProperty(linkBack)) {
+    if (instance.linkBack) {
         throw new Error('Can\'t store "' + instance + '" because it containe ' + linkBack + ' property.');
     }
 
@@ -1421,26 +1470,56 @@ ListNode.prototype.init = function(instance, linkBack) {
 ListNode.prototype.dispose = function(instance, linkBack) {
     this.$prev = this.$next = null;
     this.instance = null;
-    delete instance[linkBack];
+
+    //optimization:
+    //delete instance[linkBack];
+    instance[linkBack] = null;
+    this.onDispose();
 };
 
-var PoolOfObjects = function(objectType) {
-    var _pool = [];
+function disposePoolInstance() {
+    this.pool.dispose(this);
+}
+
+var PoolOfObjects = function(TypeOfObject) {
+    var _pool = [],
+        maxInstanceCount = 0,
+        self = this;
+
+    function createNewInstance() {
+        var instance = new TypeOfObject();
+        instance.onDispose = disposePoolInstance;
+        instance.pool = self;
+        return instance;
+    }
 
     this.get = function() {
         if (_pool.length === 0) {
-            return new objectType();
+            var instance = createNewInstance();
+            //it's seems that it give any performance benefits
+            //this.warmup(maxInstanceCount + 4);
+            return instance;
         } else {
+            //maxInstanceCount--;
             return _pool.pop();
         }
     };
 
     this.dispose = function(instance) {
+        //maxInstanceCount++;
         _pool.push(instance);
+    };
+
+    this.warmup = function(count) {
+        for (var i = 0; i < count; i++) {
+            createNewInstance().onDispose();
+        }
+        return this;
     };
 };
 
-var poolOfListNodes = new PoolOfObjects(ListNode);
+darlingutil.PoolOfObjects = PoolOfObjects;
+var poolOfListNodes = new PoolOfObjects(ListNode).warmup(1024);
 'use strict';
 /**
  * Project: GameEngine.
@@ -1497,9 +1576,10 @@ Module.prototype.$s = Module.prototype.$system = function(name, config) {
  */
 
 var System = function () {
-    this.$$updateHandler = function() {};
     this.init();
 };
+
+System.prototype.$$updateHandler = noop;
 
 System.prototype.init = function() {
     this.$setNodes(new List());
@@ -1521,7 +1601,7 @@ System.prototype.$setNodes = function($nodes) {
 System.prototype.$$updateEveryNode = function(handler, context) {
     return function(time) {
         this.$nodes.forEach(handler, context, time);
-    }
+    };
 };
 'use strict';
 
@@ -1543,8 +1623,12 @@ var World = function(){
     this.$$injectedSystems = {};
 
     this.$$systems = [];
+    this.$$beforeUpdateHandledSystems = [];
+    this.$$afterUpdateHandledSystem = [];
+    this.$$updateHandledSystem = [];
+
     this.$$families = {};
-    this.$$interval = 1;
+    this.$$interval = 1.0;
     this.$$updating = false;
     this.$playing = false;
 
@@ -1721,7 +1805,7 @@ World.prototype.$e = World.prototype.$entity = function() {
     }
 
     var entity = new Entity();
-    entity.$name =  name;
+    entity.$name = name;
     entity.$$world = this;
 
     if (isArray(arguments[componentsIndex])) {
@@ -1730,7 +1814,7 @@ World.prototype.$e = World.prototype.$entity = function() {
             if (isString(componentsArray[index])) {
                 var componentName = componentsArray[index];
                 var component = this.$$injectedComponents[componentName];
-                var componentConfig = {};
+                var componentConfig;
 
                 if (isUndefined(component)) {
                     throw new Error('World ' + this.name + ' doesn\'t has component ' + componentName + '. Only ' + this.$$injectedComponents);
@@ -1797,7 +1881,7 @@ World.prototype.$c = World.prototype.$component = function(name, config) {
 World.prototype.annotatedFunctionFactory = function annotatedFunctionFactory(context, annotationPropertyName, customMatcher) {
     var annotation = context[annotationPropertyName];
     if (isUndefined(annotation)) {
-        return noop;
+        return null;
     } else if (isArray(annotation)) {
         customMatcher = customMatcher || noop;
         var fn = annotation[annotation.length - 1];
@@ -1806,7 +1890,7 @@ World.prototype.annotatedFunctionFactory = function annotatedFunctionFactory(con
         var args = this.$$getDependencyByAnnotation(fnAnnotate);
         var argumentsMatcher = customMatcher(fnAnnotate);
         if (isDefined(argumentsMatcher)) {
-            return factoryOfFastFunctionWithMatcher(fn, context, args, argumentsMatcher);
+            return factoryOfFastFunctionWithMatcher(fn, context, args, argumentsMatcher, annotationPropertyName);
         } else {
             return factoryOfFastFunction(fn, context, args, annotationPropertyName);
         }
@@ -1824,7 +1908,7 @@ function matchFactory(annotation, name) {
     } else {
         return noop;
     }
-};
+}
 
 function beforeAfterUpdateCustomMatcher(annotation) {
     var match$time = matchFactory(annotation, '$time');
@@ -1851,7 +1935,13 @@ World.prototype.$s = World.prototype.$system = function(name, config) {
     }
 
     systemInstance.$$beforeUpdateHandler = this.annotatedFunctionFactory(systemInstance, '$beforeUpdate', beforeAfterUpdateCustomMatcher);
+    if (systemInstance.$$beforeUpdateHandler) {
+        this.$$beforeUpdateHandledSystems.push(systemInstance);
+    }
     systemInstance.$$afterUpdateHandler = this.annotatedFunctionFactory(systemInstance, '$afterUpdate', beforeAfterUpdateCustomMatcher);
+    if (systemInstance.$$afterUpdateHandler) {
+        this.$$afterUpdateHandledSystem.push(systemInstance);
+    }
 
     if (isDefined(systemInstance.$update)) {
         if (isArray(systemInstance.$update)) {
@@ -1894,6 +1984,8 @@ World.prototype.$s = World.prototype.$system = function(name, config) {
         } else {
             systemInstance.$$updateHandler = systemInstance.$update;
         }
+
+        this.$$updateHandledSystem.push(systemInstance);
     }
 
     if (isDefined(systemInstance.$added)) {
@@ -2077,12 +2169,23 @@ World.prototype.$queryByComponents = function(request) {
 World.prototype.$update = function(time) {
     this.$$updating = true;
     time = time || this.$$interval;
-    for (var index = 0, count = this.$$systems.length; index < count; index++) {
-        var system = this.$$systems[index];
+
+    var index, count, system;
+    for(index = 0, count = this.$$beforeUpdateHandledSystems.length; index < count; index++ ) {
+        system = this.$$beforeUpdateHandledSystems[index];
         system.$$beforeUpdateHandler(time, system.$nodes);
+    }
+
+    for (index = 0, count = this.$$updateHandledSystem.length; index < count; index++) {
+        system = this.$$updateHandledSystem[index];
         system.$$updateHandler(time);
+    }
+
+    for(index = 0, count = this.$$afterUpdateHandledSystem.length; index < count; index++ ) {
+        system = this.$$afterUpdateHandledSystem[index];
         system.$$afterUpdateHandler(time, system.$nodes);
     }
+
     this.$$updating = false;
 };
 
