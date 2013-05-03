@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Index</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Index</h1>
+    
+    
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>darlingjs <a href="https://travis-ci.org/darlingjs/darlingjs"><img src="https://travis-ci.org/darlingjs/darlingjs.png?branch=master" alt="Build Status" title="" /></a></h1>
+
+<p><img src="http://darlingjs.github.io/images/logo-oldschool.png" alt="Logo" title="" /></p>
+
+<p>Lightweight component and entity based Game Engine. With flexible architecture. Decupled from any dependecy. So any interaction with (Box2D, Render system and so on) put in pluggable modules. Use fluent API (Crafty.js/jQUery like).</p>
+
+<h2>Examples</h2>
+
+<ul>
+<li><a href="http://darlingjs.github.io/games/cabriolet/"><em>In Progress</em> Red Cabrioler</a> with <a href="https://github.com/darlingjs/darlingjs-examples/tree/master/04-box2d-simulation-of-vehicle">sources</a>;</li>
+<li><a href="https://github.com/darlingjs/darlingjs-examples/">Repo with other sources</a>;</li>
+</ul>
+
+<h2>Quick Start</h2>
+
+<h3>Creating the World</h3>
+
+<p>Create the World for Box2D experiments</p>
+
+<div class="highlight"><pre lang=" javascript">
+var world = darlingjs.world('myGame', [
+    //inject some modules
+
+<pre><code>//get 2D components
+'ngFlatland',
+
+//get Common Physics components
+'ngPhysics',
+
+//get Box2D implementation of Physics components
+'ngBox2DEmscripten'
+</code></pre>
+
+], {
+    fps: 60
+});
+
+</pre></div>
+
+<p><em>DarlingJS is lightweight framework so it's decoupled from any rendering, physics, sound, assets and so on libraries. And it possible to develop on pure javascript with your own simulation systems.</em></p>
+
+<p><em>Every darlingjs modules start with prefix 'ng', for example: 'ngPhysics'.</em></p>
+
+<h3>Add systems</h3>
+
+<p>add physics simulation system</p>
+
+<div class="highlight"><pre lang=" javascript">world.$add('ngBox2DSystem', {
+    //define gravity of box2d world
+    gravity: {
+        x: 0,
+        y: 9.8
+    },
+
+<pre><code>//define properties of physics simulation
+velocityIterations: 3,    
+positionIterations: 3
+</code></pre>
+
+});
+
+</pre></div>
+
+<p>add view port system for definition 2D camera position</p>
+
+<div class="highlight"><pre lang=" javascript">world.$add('ng2DViewPort', {
+    //centor of the camera
+    lookAt: {
+        x: width / 2, y: height / 2
+    },
+
+<pre><code>//size of the camera view
+width: width,
+height: height
+</code></pre>
+
+});
+</pre></div>
+
+<p>add box2d debug draw visualization</p>
+
+<div class="highlight"><pre lang=" javascript">world.$add('ngBox2DDebugDraw', {
+    //target div/convas element. For div element automaticaly create canvas element and place into the div
+    domID: 'gameView', 
+
+<pre><code>//size of canvas
+width: width, height: height
+</code></pre>
+
+});
+</pre></div>
+
+<p>add drugging support system. </p>
+
+<div class="highlight"><pre lang="">world.$add('ngBox2DDraggable', { 
+    //target div/convas element
+    domId: 'gameView', 
+
+<pre><code>//width, height of it
+width: width, height: height 
+</code></pre>
+
+});
+</pre></div>
+
+<h3>Create Entity</h3>
+
+<p>Create entity of draggable box and add it to the world</p>
+
+<div class="highlight"><pre lang=" javascript">
+darlingjs.$e('box', {
+//define position
+    ng2D: {
+        x: 0.0,
+        y: 0.0
+    },
+
+//define size of
+    ng2DSize: {
+        width: 10.0,
+        height: 10.0
+    },
+
+//mark entity as physics object
+    ngPhysics: {},
+
+//mark entity as draggable object
+    ngDraggable: {}
+});
+
+</pre></div>
+
+<p><em>Here is alternative notation: When you have a lot of components in default state, it useful to count of components by array</em></p>
+
+<div class="highlight"><pre lang=" javascript">
+darlingjs.$e('box', ['ng2D', 'ng2DSize', 'ngPhysics', 'ngDraggable']}
+
+</pre></div>
+
+<h3>Start The Game</h3>
+
+<p>To run update of game the world 60 times in second just use:</p>
+
+<div class="highlight"><pre lang=" javascript">world.$start();
+</pre></div>
+
+<p>One frame emulation:</p>
+
+<div class="highlight"><pre lang=" javascript">world.$update(1/60);
+</pre></div>
+
+<h3>Create custom system with custom component</h3>
+
+<p>Create system that automaticaly increase life of any entities with 'ngLife' and 'lifeHealer' components. So you if you want to heal some entity you can just add 'lifeHealer' component to it.</p>
+
+<h4>Usage</h4>
+
+<div class="highlight"><pre lang="javascript">//start healing entity
+
+entity.$add('healer');
+
+//stop healing entity
+
+entity.$remove('healer');
+</pre></div>
+
+<h4>Define component and system</h4>
+
+<div class="highlight"><pre lang="javascript">
+//define healer component
+
+world.$c('healer', { 
+    power: 0.1,
+    maxLife: 100.0
+});
+
+//define and add healer system to the game world
+//!ATTENTION! in next verstion $node and $nodes will be changed to the $entity and $entities
+
+world.$s('healerSystem', {
+
+<pre><code>//apply to components:
+$require: ['ngLife', 'healer'],
+
+//iterate each frame for each entity
+$update: ['$node', function($node) {
+    if ($node.ngLife.life &lt;= this.healer.maxLife) {
+        //heals entity
+        $node.ngLife.life += this.healer.power;
+    } else {
+        //stop healing when life reach of maxLife
+        $node.$remove('healer');
+    }
+}]
+</code></pre>
+
+});
+
+</pre></div>
+
+<h2>Inspired by</h2>
+
+<ul>
+<li><a href="http://angularjs.org">AngularJs</a> - dependecy injections;</li>
+<li><a href="http://ashframework.org">Ash</a> - component, entity, system architecture;</li>
+<li><a href="http://craftyjs.com">CraftyJS</a> - fluent api;</li>
+</ul>
+
+<h2>Pluggable darlingjs Modules</h2>
+
+<ul>
+<li>2D Renderering <a href="http://www.goodboydigital.com/pixi-js-is-out/">uses pixi.js</a>;</li>
+<li>Physics <a href="https://github.com/kripken/box2d.js/">uses emscripted box2d 2.2.1</a> or <a href="https://code.google.com/p/box2dweb/">box2dweb 2.1a</a>;</li>
+<li>Performance (FPS/Mem) metter <a href="https://github.com/mrdoob/stats.js">uses Stats.js</a>;</li>
+<li>Flatland (2D components);</li>
+<li>Generators (systems of procedural generation of infinity world);</li>
+<li>Particles (systems and components for emitting particles);</li>
+<li>Player (components for store player state: score, life);</li>
+</ul>
+
+<h3>Comming soon Modules</h3>
+
+<ul>
+<li>Advanced Particle System;</li>
+<li>AI</li>
+<li>FlashJS, EaselJS Rendering;</li>
+<li>Sound;</li>
+<li>and so on.</li>
+</ul>
+
+<h2>Example of Usage</h2>
+
+<p>Game Engine now in active developing and here is just proof of concept.</p>
+
+<div class="highlight"><pre lang=" javascript">
+var world = darlingjs.world('myGame', ['ngModule', 'flatWorld'], {
+    fps: 60
+});
+
+world.$add('ngDOMSystem', { targetId: 'gameID' });
+world.$add('ngFlatControlSystem');
+world.$add('ng2DCollisionSystem');
+
+world.$e('player', [
+    'ngDOM', { color: 'rgb(255,0,0)' },
+    'ng2D', {x : 0, y: 50},
+    'ngControl',
+    'ngCollision'
+]);
+
+for (var i = 0, l = 10; i < l; i++) {
+    var fixed = Math.random() > 0.5;
+    world.$e('obstacle_' + i, [
+        'ngDOM', { color: fixed?'rgb(0, 255, 0)':'rgb(200, 200, 0)'},
+        'ng2D', {x : 10 + 80 * Math.random(), y: 10 + 80 * Math.random()},
+        'ngCollision', {fixed: fixed}
+    ]);
+}
+
+world.$e('goblin', [
+    'ngDOM', { color: 'rgb(255,0,0)' },
+    'ng2D', {x : 99, y: 50},
+    'ngRamble', {frame: {
+        left: 50, right: 99,
+        top: 0, bottom: 99
+    }},
+    'ngScan', {
+        radius: 3,
+        target: 'ngPlayer',
+        switchTo: {
+            e:'ngAttack',
+            params: {
+                switchTo:'ngRamble'
+            }
+        }
+    },
+    'ngCollision'
+]);
+
+world.$start();
+
+</pre></div>
+
+<h2>Create Module</h2>
+
+<div class="highlight"><pre lang=" javascript">
+var ngModule = darlingjs.module('ngModule');
+
+ngModule.$c('ngCollision', {
+    fixed: false
+});
+
+ngModule.$c('ngScan', {
+    target: 'ngPlayer'
+});
+
+ngModule.$c('ngRamble', {
+    frame: {
+        left: 0, right: 0,
+        top: 0, bottom: 0
+    }
+});
+
+ngModule.$c('ngPlayer', {
+});
+
+ngModule.$c('ngDOM', {
+    color: 'rgb(255,0,0)'
+});
+
+ngModule.$c('ng2D', {
+    x: 0.0,
+    y: 0.0,
+    width: 10.0,
+    height: 10.0
+});
+
+ngModule.$c('ngControl', {
+    speed: 10,
+    keys:{ UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180}
+});
+
+ngModule.$system('ng2DRamble', {
+
+<pre><code>$require: ['ngRamble', 'ng2D'],
+
+_updateTarget: function($node) {
+    $node._target = {
+        x: 4 * Math.random() - 2,
+        y: 4 * Math.random() - 2
+    };
+
+    $node._target = this._normalizePosition($node._target, $node.frame);
+},
+
+_normalizePosition: function(p, frame) {
+    if (p.x &lt; frame.left) {
+        p.x = frame.left;
+    }
+
+    if (p.x &gt; frame.right) {
+        p.x = frame.right;
+    }
+
+    if (p.y &lt; frame.top) {
+        p.y = frame.top;
+    }
+
+    if (p.y &gt; frame.bottom) {
+        p.y = frame.bottom;
+    }
+},
+
+_distanceSqr: function(p1, p2) {
+    var dx = p1.x - p2.x;
+    var dy = p1.y - p2.y;
+    return dx * dx + dy * dy;
+},
+
+$update: ['$node', function($node) {
+    if (!$node._target) {
+        this._updateTarget($node);
+    } else if (this._distanceSqr($node.ng2D, $node._target) &lt; 1) {
+        this._updateTarget($node);
+    } else {
+        var dx = Math.abs($node._target.x - $node.ng2D.x);
+        var dy = Math.abs($node._target.y - $node.ng2D.y);
+        if (dx &gt; dy) {
+            $node.ng2D.x+= $node._target.x &gt; $node.ng2D.x?1:-1;
+        } else {
+            $node.ng2D.y+= $node._target.y &gt; $node.ng2D.y?1:-1;
+        }
+    }
+}]
+</code></pre>
+
+})
+
+ngModule.$system('ng2DCollisionSystem', {
+
+<pre><code>$require: ['ngCollision', 'ng2D'],
+
+_isLeftCollision: function(p1, p2) {
+    return false;
+},
+
+_isRightCollision: function(p1, p2) {
+    return false;
+},
+
+_isTopCollision: function(p1, p2) {
+    return false;
+},
+
+_isBottomCollision: function(p1, p2) {
+    return false;
+},
+
+$update: ['$nodes', function($nodes) {
+    //TODO brute-force. just push away after collision
+    for (var j = 0, lj = $nodes.length; j &lt; lj; j++) {
+        for ( var i = 0, li = $nodes.length; i &lt; li; i++) {
+            var node1p = $nodes[i].ng2D;
+            var node2p = $nodes[j].ng2D;
+            var node1Fixed = $nodes[i].ngCollision.fixed;
+            var node2Fixed = $nodes[j].ngCollision.fixed;
+
+            if (this._isLeftCollision(node1p, node2p)) {
+                //TODO shift nodes based on
+                node1Fixed, node2Fixed;
+            } else if (this._isRightCollision(node1p, node2p)) {
+                //TODO shift nodes based on
+                node1Fixed, node2Fixed;
+            } else if (this._isTopCollision(node1p, node2p)) {
+                //TODO shift nodes based on
+                node1Fixed, node2Fixed;
+            } else if (this._isBottomCollision(node1p, node2p)) {
+                //TODO shift nodes based on
+                node1Fixed, node2Fixed;
+            }
+        }
+    }
+}]
+</code></pre>
+
+});
+
+ngModule.$system('ng2DScan', {
+    $require: ['ng2D', 'ngScan'],
+
+<pre><code>$update : ['$nodes', function($nodes) {
+    //TODO brute-force. just push away after collision
+    for (var j = 0, lj = $nodes.length; j &lt; lj; j++) {
+        for ( var i = 0, li = $nodes.length; i &lt; li; i++) {
+
+        }
+    }
+}]
+</code></pre>
+
+})
+
+ngModule.$system('ngControlSystem', {
+    $require: ['ng2D', 'ngControl'],
+
+<pre><code>_targetElementID: 'game',
+
+_target:null,
+
+_actions: {},
+
+_keyBinding: [],
+
+_keyBind: function(keyId, action) {
+    this._keyBinding[keyId] = action;
+    this._actions[action] = false;
+},
+
+$added: function() {
+    this._keyBind(87, 'move-up');
+    this._keyBind(65, 'move-left');
+    this._keyBind(83, 'move-down');
+    this._keyBind(68, 'move-right');
+
+    this._target = document.getElementById(this._targetElementID);
+    var self = this;
+    this._target.addEventListener('keydown', function(e) {
+        var action = self._keyBinding[e.keyID];
+        if (action) {
+            self._actions[action] = true;
+        }
+    });
+    this._target.addEventListener('keyup', function(e) {
+        var action = self._keyBinding[e.keyID];
+        if (action) {
+            self._actions[action] = false;
+        }
+    });
+},
+_speed: {x:0.0, y:0.0},
+_normalize: function(speed) {
+    //TODO : ...
+},
+
+$update: ['$node', '$time', '$world', function($node, $time, $world) {
+    var speed = this._speed;
+    if (this._actions['move-up']) {
+        speed.y = -1.0;
+    }
+    if (this._actions['move-down']) {
+        speed.y = +1.0;
+    }
+    if (this._actions['move-left']) {
+        speed.x = -1.0;
+    }
+    if (this._actions['move-right']) {
+        speed.x = +1.0;
+    }
+
+    this._normalize(speed);
+
+    $node.ng2D.x += speed.x * $time * $world.fps;
+    $node.ng2D.y += speed.y * $time * $world.fps;
+}]
+</code></pre>
+
+});
+
+ngModule.$system('ngDOMSystem', {
+    _targetElementID: 'game',
+
+<pre><code>_target: null,
+
+_element: null,
+
+_style: null,
+
+$require: ['ngDOM', 'ng2D'],
+
+$added: function() {
+    if (this.target === null &amp;&amp; this.targetId !== null) {
+        this.target = document.getElementById(this.targetId);
+    }
+},
+
+$addNode: function($node) {
+    var element = document.createElement("div");
+    var style = element.style;
+
+    style.position = "absolute";
+
+    $node._style = style;
+    $node._element = element;
+    this._target.appendChild(element);
+},
+
+$removeNode: function($node) {
+    //TODO:
+    this._target.removeChild($node._element);
+},
+
+$update: ['$node', function($node) {
+    var style = $node._style;
+    style.left = $node.ng2D.x + 'px';
+    style.top = $node.ng2D.y + 'px';
+}]
+</code></pre>
+
+});
+
+</pre></div>
+
+<h2>Copyrights</h2>
+
+<p>Logo by Alena Krevenets (Burenka) <a href="http://burenkaz.daportfolio.com/"><a href='http://burenkaz.daportfolio.com/'>http://burenkaz.daportfolio.com/</a></a></p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="darlingjs.html">darlingjs</a></li><li><a href="darlingutil.html">darlingutil</a></li><li><a href="Entity.html">Entity</a></li><li><a href="Family.html">Family</a></li><li><a href="List.html">List</a></li><li><a href="ListNode.html">ListNode</a></li><li><a href="Module.html">Module</a></li><li><a href="PoolOfObjects.html">PoolOfObjects</a></li><li><a href="System.html">System</a></li><li><a href="World.html">World</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat May 04 2013 01:58:09 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-38043860-3', 'github.io');
+  ga('send', 'pageview');
+
+  window.onerror = function(msg, url, line) {
+      var preventErrorAlert = true;
+      ga('_trackEvent', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line, 0, true);
+      return preventErrorAlert;
+  };
+</script>
+
+<!-- Social buttons -->
+<div class="center add-a-little-space-up-and-down">
+  <div style="width: 200px;" class="g-plusone" data-size="medium" data-annotation="inline" data-width="200"></div>
+  <div style="width: 200px; display: inline-block;">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en">Tweet</a>
+  </div>
+  <div style="width: 200px; top: -4px;" class="fb-like" data-href="http://darlingjs.github.io/" data-send="false" data-layout="button_count" data-width="200" data-show-faces="true" data-font="arial" data-colorscheme="light"></div>
+</div>
+
+<!--Social Code -->
+
+<!-- G+ -->
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+
+<!-- Twitter -->
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<!-- Twitter Follow.me -->
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+<!-- Facebook -->
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=460658387336825";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<!-- Comments by Disqus -->
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'darlingjs'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</body>
+</body>
+</html>
