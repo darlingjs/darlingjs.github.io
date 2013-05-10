@@ -32,9 +32,11 @@
       ga('send', 'pageview');
 
       window.onerror = function(msg, url, line) {
-          var preventErrorAlert = true;
-          ga('_trackEvent', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line, 0, true);
-          return preventErrorAlert;
+        var preventErrorAlert = true;
+        var msg = '_trackEvent', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line;
+        ga(msg, 0, true);
+        console.log(msg);
+        return preventErrorAlert;
       };
     </script>
     <script src="http://darlingjs.github.io/lib/darling.0.0.6.js"></script>
