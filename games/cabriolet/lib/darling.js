@@ -1,5 +1,5 @@
 /**
- * @license darlingjs v0.0.4 2013-05-02 by Eugene Krevenets.
+ * @license darlingjs v0.0.4 2013-05-05 by Eugene Krevenets.
  * Component & Entity based javascript game engine. Decoupled from any visualization, physics, and so on. With injections and modules based on AngularJS.
  * http://darlingjs.github.io/
  *
@@ -57,8 +57,20 @@
  * Get From AngularJS Project with little changes based on JSHint.
  */
 
-var _darlingutil = window.darlingutil,
-    darlingutil = window.darlingutil = window.darlingutil||{};
+/**
+ * @ignore
+ * @type {*}
+ * @private
+ */
+var _darlingutil = window.darlingutil;
+
+/**
+ * The static facade of darlingjs utils
+ *
+ * @class darlingutil
+ * @global
+ */
+var darlingutil = window.darlingutil = window.darlingutil||{};
 
 darlingutil.version = '0.0.4';
 
@@ -299,7 +311,11 @@ darlingutil.noConflict = function() {
 
 var toString = Object.prototype.toString;
 
-
+/**
+ * Is instance is defined
+ * @param {*} value
+ * @return {boolean}
+ */
 darlingutil.isDefined = isDefined;
 function isDefined(value) {
     return typeof value !== 'undefined';
@@ -328,7 +344,6 @@ function isString(value) {
 /**
  * Checks if `obj` is a window object.
  *
- * @private
  * @param {*} obj Object to check
  * @returns {boolean} True if `obj` is a window obj.
  */
@@ -469,6 +484,7 @@ function copy(source, destination, deleteAllDestinationProperties){
 
 /**
  * @private
+ * @ignore
  * @param {*} obj
  * @return {boolean} Returns true if `obj` is an array or array-like object (NodeList, Arguments, ...)
  */
@@ -641,6 +657,7 @@ function assertArgFn(arg, name, acceptArrayAnnotation) {
 
 /**
  * throw error of the argument is falsy.
+ * @ignore
  */
 function assertArg(arg, name, reason) {
     if (!arg) {
@@ -650,13 +667,13 @@ function assertArg(arg, name, reason) {
 }
 
 /**
- * @ngdoc function
- * @name angular.noop
- * @function
- *
- * @description
  * A function that performs no operations. This function can be useful when writing code in the
  * functional style.
+ *
+ * Get from AngularJS.
+ *
+ * @ignore
+ * @example
  <pre>
  function foo(callback) {
        var result = calculateResult();
@@ -668,6 +685,7 @@ function noop(){}
 
 /**
  * Get Observer from Backbone
+ * @ignore
  */
 
 // Create local references to array methods we'll want to use later.
@@ -872,6 +890,7 @@ function swallowCopy(original, extended) {
 
 /**
  *
+ * @ignore
  * @param original
  * @param extended
  * @return {*}
@@ -906,6 +925,7 @@ function mixin(original, extended) {
  *
  * So where it's possbile we use call by string
  *
+ * @ignore
  * @param fn
  * @param context
  * @param args
@@ -964,6 +984,7 @@ function factoryOfFastFunctionAsAMember(fn, context, args, methodName) {
 /**
  * Create function with custom matcher
  *
+ * @ignore
  * @param fn
  * @param context
  * @param args
@@ -979,6 +1000,14 @@ function factoryOfFastFunctionWithMatcher(fn, context, args, argsMatcher, method
     }
 }
 
+/**
+ * @ignore
+ * @param fn
+ * @param context
+ * @param args
+ * @param argsMatcher
+ * @return {Function}
+ */
 function factoryOfFastFunctionWithMatcherAsCallOrApply(fn, context, args, argsMatcher) {
     switch(args.length) {
         case 0: return function() {
@@ -1034,28 +1063,40 @@ darlingutil.wipe = function (obj) {
             delete obj[p];
     }
 };
-'use strict';
-
 /**
- * Module
- * @module core
+ * Project: GameEngine.
+ * @copyright (c) 2013, Eugene-Krevenets
  */
 
+/**
+ * Previous instance of facade of darlingjs engine
+ *
+ * @ignore
+ * @type {darlingjs}
+ * @private
+ */
 var _darlingjs = window.darlingjs;
+
+/**
+ * @class darlingjs
+ * @classdesc
+ *
+ * The static facade of darlinjg engine.
+ * Uses for creating modules and game world.
+ */
 var darlingjs = window.darlingjs || (window.darlingjs = {});
 darlingjs.version = '0.0.4';
 
+var worlds = {};
+
+var modules = {};
+
 /**
- * @ngdoc function
- * @name darlingjs.noConflict
- * @function
- *
- * @description
  * Restores the previous global value of darlingjs and returns the current instance. Other libraries may already use the
  * darlingjs namespace. Or a previous version of darlingjs is already loaded on the page. In these cases you may want to
  * restore the previous namespace and keep a reference to darlingjs.
  *
- * @return {Object} The current darlingjs namespace
+ * @return {darlingjs} The current darlingjs namespace
  */
 darlingjs.noConflict = function() {
     var a = window.darlingjs;
@@ -1063,15 +1104,23 @@ darlingjs.noConflict = function() {
     return a;
 };
 
-var worlds = {};
-var modules = {};
-
+/**
+ * Create new Module
+ * m is short form of function module
+ * @example
+ *<pre>
+ var m = darlingjs.module('theModule');
+ *</pre>
+ * @param {String} name The name of new module
+ * @param {Array} [requires] The array of modules that new module it depends on
+ * @return {Module}
+ */
 darlingjs.m = darlingjs.module = function(name, requires) {
     if (isDefined(modules[name])) {
         throw new Error('Module "' + name + '" has already been defined.');
     }
     var moduleInstance = new Module();
-    moduleInstance.name = name;
+    moduleInstance.$name = name;
     moduleInstance.requires = requires;
 
     modules[name] = moduleInstance;
@@ -1080,9 +1129,20 @@ darlingjs.m = darlingjs.module = function(name, requires) {
 };
 
 /**
- * Build World. Like a Module in AngularJS
+ * Build World. Like a Module in AngularJS.
+ * w is short form of function world
+ * @example
+ *<pre>
+ var world = darlingjs.world('theWorld', [
+   'ngPhysics',
+   'ngBox2DEmscripten',
+   'ngFlatland',
+   'ngPixijsAdapter']);
+ *</pre>
+ * @param {String} name The name of new World
+ * @param {Array} requires The array of requires modules
  *
- * @type {Function}
+ * @return {World} The new World;
  */
 darlingjs.w = darlingjs.world = function(name, requires) {
     if (isDefined(worlds[name])) {
@@ -1090,40 +1150,40 @@ darlingjs.w = darlingjs.world = function(name, requires) {
     }
 
     var worldInstance = new World();
-    worldInstance.name = name;
+    worldInstance.$name = name;
     worlds[name] = worldInstance;
 
     if (isArray(requires)) {
         for (var index = 0, count = requires.length; index < count; index++) {
             var moduleName = requires[index];
-            var module = modules[moduleName];
-            if (isUndefined(module)) {
+            var moduleInstance = modules[moduleName];
+            if (isUndefined(moduleInstance)) {
                 throw new Error('Can\'t find module: "' + moduleName + '"');
             }
 
-            worldInstance.$$injectedModules[moduleName] = module;
+            worldInstance.$$injectedModules[moduleName] = moduleInstance;
 
-            var components = module.$$components;
+            var components = moduleInstance.$$components;
             for (var componentName in components) {
                 if (components.hasOwnProperty(componentName)) {
-                    var component = module.$$components[componentName];
+                    var component = moduleInstance.$$components[componentName];
                     if (isUndefined(component)) {
-                        throw new Error('Module: "' + this.name + '" has null component with name "' + componentName + '".');
+                        throw new Error('Module: "' + moduleName + '" has null component with name "' + componentName + '".');
                     }
 
-                    worldInstance.$$injectedComponents[component.name] = component;
+                    worldInstance.$$injectedComponents[component.$name] = component;
                 }
             }
 
-            var systems = module.$$systems;
+            var systems = moduleInstance.$$systems;
             for (var systemName in systems) {
                 if (systems.hasOwnProperty(systemName)) {
                     var system = systems[systemName];
                     if (isUndefined(system)) {
-                        throw new Error('Module: "' + this.name + '" has null system with name "' + systemName + '".');
+                        throw new Error('Module: "' + moduleName + '" has null system with name "' + systemName + '".');
                     }
 
-                    worldInstance.$$injectedSystems[system.name] = system;
+                    worldInstance.$$injectedSystems[system.$name] = system;
                 }
             }
         }
@@ -1134,10 +1194,11 @@ darlingjs.w = darlingjs.world = function(name, requires) {
 
 /**
  * Remove module from engine by name
- * @param value
+ *
+ * @param {String} name The name of module
  */
-darlingjs.removeModule = function(value) {
-    delete modules[value];
+darlingjs.removeModule = function(name) {
+    delete modules[name];
 };
 
 /**
@@ -1148,6 +1209,11 @@ darlingjs.removeAllModules = function() {
 };
 
 
+/**
+ * Remove world
+ *
+ * @param {String/World} value The name or instance of world to remove
+ */
 darlingjs.removeWorld = function(value) {
     if (isString(value)) {
         delete worlds[value];
@@ -1160,6 +1226,7 @@ darlingjs.removeWorld = function(value) {
         }
     }
 }
+
 /**
  * Remove all worlds from engine
  */
@@ -1169,21 +1236,51 @@ darlingjs.removeAllWorlds = function() {
 
 
 
-'use strict';
-
 /**
  * Project: GameEngine.
- * Copyright (c) 2013, Eugene-Krevenets
+ * @copyright (c) 2013, Eugene-Krevenets
  */
 
+/**
+ * @class Entity
+ * @classdesc
+ *
+ * Entity is bag of game property in one instance.
+ * For example instance of bonus with component position in (ng2D).
+ *
+ * @constructor
+ */
 var Entity = function() {
     mixin(this, Events);
 };
 
+/**
+ * Name of entity
+ * @type {string}
+ */
 Entity.prototype.$name = '';
 
+/**
+ * World of entity
+ * @private
+ * @type {World}
+ */
 Entity.prototype.$$world = null;
 
+/**
+ * Add new Component to entity
+ *
+ * @example
+ * <pre>
+ entity.$add('ng2D', {
+   x: 1.0,
+   y: 3.0
+ });
+ * </pre>
+ * @param {string|Component} value The name of the Component or
+ * @param {object} [config] The config of adding Component
+ * @return {Component}
+ */
 Entity.prototype.$add = function(value, config) {
     var instance;
     var name;
@@ -1204,7 +1301,7 @@ Entity.prototype.$add = function(value, config) {
         throw new Error('Can\'t add null component.');
     }
 
-    if (this.$has(name)) {
+    if (this[name]) {
         this.$remove(name);
     }
 
@@ -1214,6 +1311,16 @@ Entity.prototype.$add = function(value, config) {
     return instance;
 };
 
+/**
+ * Remove component from entity
+ *
+ * @example
+ * <pre>
+ entity.$remove('ngVisible');
+ * </pre>
+ * @param {string|Component} value The name or instance of component
+ * @return {Component}
+ */
 Entity.prototype.$remove = function(value) {
     var instance;
     var name;
@@ -1227,7 +1334,7 @@ Entity.prototype.$remove = function(value) {
         throw new Error('Can\'t remove from component ' + value);
     }
 
-    if (!this.$has(name)) {
+    if (!this[name]) {
         return;
     }
 
@@ -1240,11 +1347,16 @@ Entity.prototype.$remove = function(value) {
     return instance;
 };
 
+/**
+ * Is entity has component
+ * @param {string|Component} value The name or instance of component test
+ * @return {boolean}
+ */
 Entity.prototype.$has = function(value) {
-    if (isComponent(value)) {
-        return !!this[value.$name];
-    } else {
+    if (isString(value)) {
         return !!this[value];
+    } else {
+        return !!this[value.$name];
     }
 };
 
@@ -1262,6 +1374,14 @@ function isComponent(value) {
  * We can calculate it in real-time as in addIfMatch, but it's not good for performance.
  */
 
+/**
+ * @private
+ * @inner
+ *
+ * Filter for component to apply entity to system by requested components
+ *
+ * @constructor
+ */
 function Family() {
     this.components = [];
     this.componentsString = '';
@@ -1294,7 +1414,11 @@ Family.prototype.addIfMatch = function(e) {
         }
     }
 
-    e[this.$marker()] = true;
+    if (!e.$$familyMarker) {
+        e.$$familyMarker = {};
+    }
+
+    e.$$familyMarker[this.$marker()] = true;
 
     this.nodes.add(e);
 };
@@ -1304,12 +1428,12 @@ Family.prototype.removeIfMatch = function(e, component) {
         return;
     }
 
-    delete e[this.$$marker];
+    e.$$familyMarker[this.$$marker] = false;
     this.nodes.remove(e);
 };
 
 Family.prototype.isInList = function(e) {
-    return e.hasOwnProperty(this.$$marker);
+    return e.$$familyMarker && e.$$familyMarker[this.$$marker];
 };
 'use strict';
 /**
@@ -1322,25 +1446,42 @@ Family.prototype.isInList = function(e) {
  * Copyright (c) 2013, Eugene-Krevenets
  */
 
-var List = function() {
-    this._head = this._tail = null;
+/**
+ *
+ * @inner
+ *
+ * @param {string} [name] The List name
+ * @constructor
+ */
+var List = function(name) {
+    this.$head = this.$tail = null;
     this._length = 0;
-    this.PROPERTY_LINK_TO_NODE = '$$listNode_' + Math.random();
+    if (name) {
+        this.PROPERTY_LINK_TO_NODE = '$$listNode_' + name;
+    } else {
+        this.PROPERTY_LINK_TO_NODE = '$$listNode_' + Math.random();
+    }
     mixin(this, Events);
 };
 
 darlingutil.List = List;
 
+/**
+ * Add instance to list
+ *
+ * @param {*} instance
+ * @return {ListNode}
+ */
 List.prototype.add = function(instance) {
     var node = poolOfListNodes.get();
     node.init(instance, this.PROPERTY_LINK_TO_NODE);
 
-    if (this._head) {
-        this._tail.$next = node;
-        node.$prev = this._tail;
-        this._tail = node;
+    if (this.$head) {
+        this.$tail.$next = node;
+        node.$prev = this.$tail;
+        this.$tail = node;
     } else {
-        this._head = this._tail = node;
+        this.$head = this.$tail = node;
     }
 
     if (instance) {
@@ -1354,16 +1495,22 @@ List.prototype.add = function(instance) {
     return node;
 };
 
+/**
+ * Add instance to head
+ *
+ * @param {*} instance
+ * @return {ListNode}
+ */
 List.prototype.addHead = function(instance) {
     var node = poolOfListNodes.get();
     node.init(instance, this.PROPERTY_LINK_TO_NODE);
 
-    if (this._head) {
-        this._head.$prev = node;
-        node.$next = this._head;
-        this._head = node;
+    if (this.$head) {
+        this.$head.$prev = node;
+        node.$next = this.$head;
+        this.$head = node;
     } else {
-        this._head = this._tail = node;
+        this.$head = this.$tail = node;
     }
 
     if (instance) {
@@ -1377,27 +1524,32 @@ List.prototype.addHead = function(instance) {
     return node;
 };
 
+/**
+ * Remove {ListNode} by instance
+ * @param {*} instance
+ * @return {boolean}
+ */
 List.prototype.remove = function(instance) {
     var node;
     if (instance instanceof ListNode) {
         node = instance;
     } else {
-        if (!instance.hasOwnProperty(this.PROPERTY_LINK_TO_NODE)) {
+        if (!instance.$$linkNode || !instance.$$linkNode[this.PROPERTY_LINK_TO_NODE]) {
             return false;
         }
 
-        node = instance[this.PROPERTY_LINK_TO_NODE];
+        node = instance.$$linkNode[this.PROPERTY_LINK_TO_NODE];
         if (node === null) {
             return false;
         }
     }
 
-    if (this._tail === node) {
-        this._tail = node.$prev;
+    if (this.$tail === node) {
+        this.$tail = node.$prev;
     }
 
-    if (this._head === node) {
-        this._head = node.$next;
+    if (this.$head === node) {
+        this.$head = node.$next;
     }
 
     if (node.$prev !== null) {
@@ -1416,16 +1568,27 @@ List.prototype.remove = function(instance) {
     return true;
 };
 
+/**
+ * Length of the list
+ * @return {number}
+ */
 List.prototype.length = function() {
     return this._length;
 };
 
+/**
+ * Execute callback for each node of the List
+ *
+ * @param {function} callback
+ * @param context
+ * @param arg
+ */
 List.prototype.forEach = function(callback, context, arg) {
     if (!isFunction(callback)) {
         return;
     }
 
-    var node = this._head;
+    var node = this.$head;
     if (context) {
         while(node) {
             callback.call(context, node.instance, arg);
@@ -1439,6 +1602,13 @@ List.prototype.forEach = function(callback, context, arg) {
     }
 };
 
+/**
+ * Node of {List}
+ *
+ * @param {*} instance
+ * @param {String} linkBack
+ * @constructor
+ */
 var ListNode = function(instance, linkBack) {
     if (instance) {
         this.init(instance, linkBack);
@@ -1460,30 +1630,47 @@ ListNode.prototype.init = function(instance, linkBack) {
 
     //optimization
     //if (instance.hasOwnProperty(linkBack)) {
-    if (instance.linkBack) {
-        throw new Error('Can\'t store "' + instance + '" because it containe ' + linkBack + ' property.');
+    if (instance.$$linkNode && instance.$$linkNode[linkBack]) {
+        throw new Error('Can\'t store "' + instance + '" because it contains ' + linkBack + ' property.' + instance.$$linkNode[linkBack]);
     }
 
-    instance[linkBack] = this;
+    if (!instance.$$linkNode) {
+        instance.$$linkNode = {};
+    }
+    instance.$$linkNode[linkBack] = this;
 };
 
+/**
+ * Dispose of node
+ *
+ * @param instance
+ * @param linkBack
+ */
 ListNode.prototype.dispose = function(instance, linkBack) {
     this.$prev = this.$next = null;
     this.instance = null;
 
     //optimization:
     //delete instance[linkBack];
-    instance[linkBack] = null;
+    if (instance.$$linkNode) {
+        instance.$$linkNode[linkBack] = null;
+    }
     this.onDispose();
-};
+}
 
 function disposePoolInstance() {
     this.pool.dispose(this);
 }
 
+/**
+ * Pool of Object. For recycling of ListNode instances
+ *
+ * @param TypeOfObject
+ * @constructor
+ */
 var PoolOfObjects = function(TypeOfObject) {
     var _pool = [],
-        maxInstanceCount = 0,
+        //maxInstanceCount = 0,
         self = this;
 
     function createNewInstance() {
@@ -1493,6 +1680,10 @@ var PoolOfObjects = function(TypeOfObject) {
         return instance;
     }
 
+    /**
+     * Request new instance
+     * @return {*}
+     */
     this.get = function() {
         if (_pool.length === 0) {
             var instance = createNewInstance();
@@ -1505,11 +1696,20 @@ var PoolOfObjects = function(TypeOfObject) {
         }
     };
 
+    /**
+     * Dispose of instance
+     * @param instance
+     */
     this.dispose = function(instance) {
         //maxInstanceCount++;
         _pool.push(instance);
     };
 
+    /**
+     * Put some instances to pool
+     * @param {number} count
+     * @return {PoolOfObjects}
+     */
     this.warmup = function(count) {
         for (var i = 0; i < count; i++) {
             createNewInstance().onDispose();
@@ -1526,45 +1726,127 @@ var poolOfListNodes = new PoolOfObjects(ListNode).warmup(1024);
  * Copyright (c) 2013, Eugene-Krevenets
  */
 
+/**
+ * @class Module
+ * @classdesc
+ *
+ * Abstract Module. Use for holding some (for one propose) components and systems
+ * in one bag and easy plug-n-play to the World.
+ *
+ * For example here is some system engine modules, like ngPhysics - that holds components
+ * that describe physics properties of the entity or like ngPixijsAdapter - that holds
+ * system of integration with Pixi.js library.
+ *
+ * @constructor
+ */
 var Module = function(){
     this.$$components = {};
     this.$$systems = {};
 };
 
+/**
+ * Name of the Module
+ * @type {string}
+ */
+Module.prototype.$name = '';
+
+/**
+ * Define is module has component or system.
+ *
+ * @param {string} name of component or system
+ * @return {boolean}
+ */
 Module.prototype.$has = function(name) {
     return isDefined(this.$$components[name]) ||
            isDefined(this.$$systems[name]);
 };
 
 /**
- * Declare Component
- *
- * @type {Function}
+ * Describe Component
+ * @example
+ *<pre>
+ module.$c('Goblin', {
+    gold: 100,
+    health: 50,
+    wisdom: 10
+ });
+ *</pre>
+ * @param {string} name The name of the Component
+ * @param {Object} [component] The bag of properties of component
+ * @return {Module}
  */
-Module.prototype.$c = Module.prototype.$component = function(name, defaultState) {
-    defaultState = defaultState || {};
-    var component = {
-        name: name,
-        defaultState: defaultState
-    };
+Module.prototype.$c = Module.prototype.$component = function(name, component) {
+    component = component || {};
+    component.$name = component.$name || name;
     this.$$components[name] = component;
     return this;
 };
 
 /**
- * Declare System. Like a filter in AngularJS
+ * Describe System. Like a filter in AngularJS
  *
- * @type {Function}
+ * @example
+ * <pre>
+ module.$s('theSystem', {
+    //define array of requiested component
+    $require: ['theComponent1', 'theComponent2']
+
+    //(optional) execute on adding system
+    $added: function() {
+
+    },
+
+    //(optional) execute on removing system
+    $removed: function() {
+
+    },
+
+    //(optional) execute on adding entity to system
+    $addEntity: function($entity) {
+
+    },
+
+    //(optional) execute on removing entity from system
+    $removeEntity: function($entity) {
+
+    },
+
+    //(optional) beforeUpdate
+    //before function define all injections (angularjs style)
+    $beforeUpdate: ['$entities', function($entities) {
+
+    }],
+
+    //(optional) handle each entity in the system.
+    //before function define all injections (angularjs style)
+    $update: ['#entity', '$world', function($entity, $world) {
+
+    }],
+
+    //(optional) afterUpdate
+    //before function define all injections (angularjs style)
+    $afterUpdate: ['$entities', function($entities) {
+
+    }]
+ });
+ * </pre>
+ *
+ * @param {String} name The name of component
+ * @param {Object} [config]
+ *
+ * @see System
+ *
+ * @return {Module}
  */
 Module.prototype.$s = Module.prototype.$system = function(name, config) {
     if (isUndefined(name)) {
         throw new Error('System name must to be defined.');
     }
     config = config || {};
-    config.name = name;
+    config.$name = name;
 
     if (isDefined(this.$$systems[name])) {
-        throw new Error('Module "' + this.name + '" already has system with name "' + name + '".');
+        throw new Error('Module "' + this.$name + '" already has system with name "' + name + '".');
     }
     this.$$systems[name] = config;
     return this;
@@ -1575,29 +1857,82 @@ Module.prototype.$s = Module.prototype.$system = function(name, config) {
  * Copyright (c) 2013, Eugene-Krevenets
  */
 
+/**
+ * @class System
+ * @classdesc
+ *
+ * System abstract class every system implement it
+ *
+ * @constructor
+ */
 var System = function () {
-    this.init();
+    this.$$init();
 };
 
-System.prototype.$$updateHandler = noop;
+/**
+ * name of the System
+ * @type {string}
+ */
+System.prototype.$name = '';
 
-System.prototype.init = function() {
-    this.$setNodes(new List());
+/**
+ * Handlers
+ * @ignore
+ */
+System.prototype.$$updateHandler = null;
+System.prototype.$$beforeUpdateHandler = null;
+System.prototype.$$afterUpdateHandler = null;
+System.prototype.$$addedHandler = null;
+System.prototype.$$removedHandler = null;
+System.prototype.$$addEntityHandler = null;
+System.prototype.$$removeEntityHandler = null;
+
+/**
+ * init instance
+ * @ignore
+ * @private
+ */
+System.prototype.$$init = function() {
+    this.$$setNodes(new List());
 };
 
-System.prototype.$setNodes = function($nodes) {
+/**
+ * Set entities
+ * @ignore
+ * @private
+ * @param {List} $nodes
+ */
+System.prototype.$$setNodes = function($nodes) {
+    if (this.$nodes) {
+        this.$nodes.off('add');
+        this.$nodes.off('remove');
+    }
+
     this.$nodes = $nodes;
 
     var self = this;
-    this.$nodes.on('add', function(node) {
-        self.$$addNodeHandler(node);
-    });
 
-    this.$nodes.on('remove', function(node) {
-        self.$$removeNodeHandler(node);
-    });
+    if (this.$nodes) {
+        this.$nodes.on('add', function(node) {
+            self.$$addEntityHandler(node);
+        });
+
+        this.$nodes.on('remove', function(node) {
+            self.$$removeEntityHandler(node);
+        });
+    }
 };
 
+/**
+ *
+ * Build update function that be able to executed for each entity of the System
+ *
+ * @ignore
+ * @private
+ * @param handler
+ * @param context
+ * @return {Function}
+ */
 System.prototype.$$updateEveryNode = function(handler, context) {
     return function(time) {
         this.$nodes.forEach(handler, context, time);
@@ -1612,11 +1947,19 @@ System.prototype.$$updateEveryNode = function(handler, context) {
  * DESIGN NOTES
  * ============
  *
- * Because entity can fraquantly be added and removed,
+ * Because entity can frequently will be added and removed,
  * them implemented by list.
  *
  */
 
+/**
+ * @class World
+ * @classdesc
+ *
+ * Game World. Contain Modules, System and Entities.
+ *
+ * @constructor
+ */
 var World = function(){
     this.$$injectedComponents = {};
     this.$$injectedModules = {};
@@ -1632,65 +1975,79 @@ var World = function(){
     this.$$updating = false;
     this.$playing = false;
 
-    this.$entities = new List();
+    this.$entities = new List('World');
     this.$name = '';
     //this.$$entitiesHead = this.$$entitiesTail = null;
     //this.$$entitiesCount = 0;
 };
 
+/**
+ * Is contain definition of Component, Module or System
+ * @param {string} name The name of Component, Module or System
+ * @return {boolean}
+ */
 World.prototype.$has = function(name) {
     return isDefined(this.$$injectedComponents[name]) ||
            isDefined(this.$$injectedModules[name]) ||
            isDefined(this.$$injectedSystems[name]);
 };
 
+/**
+ * Is System used (added) in the World
+ * @param {string|System} value The name or instance of System
+ * @return {boolean}
+ */
 World.prototype.$isUse = function(value) {
     if (value instanceof System) {
         return this.$$systems.indexOf(value) >= 0;
     } else {
-        for (var index = 0, count = this.$$systems.length; index < count; index++) {
-            if (this.$$systems[index].name === value) {
-                return true;
-            }
-        }
+        return this.$$getSystemByName(value) !== null;
     }
 
     return false;
 };
 
+/**
+ * Add Entity or System to the World
+ * @param {Entity|System|String} value The Entity or the System
+ * @param {Object} [config] The config of the added instance
+ * @return {Entity|System}
+ */
 World.prototype.$add = function(value, config) {
     var instance;
 
-    if (isString(value)){
-        instance = this.$$injectedSystems[value];
-        if (isUndefined(instance)) {
-            throw new Error('Instance of "' + value + '" doesn\'t injected in the world "' + this.name + '".');
-        }
+    if (value instanceof Entity) {
+        instance = this.$$addEntity(value);
+    } else if (value instanceof System) {
+        this.$$addSystem(value);
     } else {
-        instance = value;
-    }
-
-    if (instance instanceof Entity) {
-        instance = this.$$addEntity(instance);
-    } else if (instance instanceof System) {
-        this.$$addSystem(instance);
-    } else if (instance !== null) {
         instance = this.$system(value, config);
-        this.$$addSystem(instance);
     }
 
     return instance;
 };
 
-
+/**
+ * Add Entity to the World
+ * @private
+ * @param {Entity} instance The instance of Entity
+ * @return {Entity}
+ */
 World.prototype.$$addEntity = function(instance) {
     this.$entities.add(instance);
+    instance.$$world = this;
     instance.on('add', this.$$onComponentAdd, this);
     instance.on('remove', this.$$onComponentRemove, this);
     this.$$matchNewEntityToFamilies(instance);
     return instance;
 };
 
+/**
+ * Remove Entity from the World
+ * @private
+ * @param {Entity} instance
+ * @return {Entity}
+ */
 World.prototype.$$removeEntity = function(instance) {
     this.$entities.remove(instance);
     this.$$matchRemoveEntityToFamilies(instance);
@@ -1699,6 +2056,14 @@ World.prototype.$$removeEntity = function(instance) {
     return instance;
 };
 
+/**
+ * Get array of instance by it names
+ * @ignore
+ * @private
+ * @param {array} annotation The annotation array with names.
+ * @param {array} target
+ * @return {array}
+ */
 World.prototype.$$getDependencyByAnnotation = function(annotation, target) {
     target = target || [];
     for (var i = 0, l = annotation.length; i < l; i++) {
@@ -1708,6 +2073,14 @@ World.prototype.$$getDependencyByAnnotation = function(annotation, target) {
     return target;
 };
 
+/**
+ * Get dependency by names. For example $world - return current game world.
+ * Implementation of service locator
+ * @ignore
+ * @private
+ * @param {string} name
+ * @return {World|System|*}
+ */
 World.prototype.$$getDependencyByName = function(name) {
     //TODO: Get from AngularJS
     switch(name) {
@@ -1717,19 +2090,15 @@ World.prototype.$$getDependencyByName = function(name) {
     return this.$$getSystemByName(name);
 };
 
-World.prototype.$remove = function(instance) {
-    if (instance instanceof Entity) {
-        this.$$removeEntity(instance);
-    } else if(instance instanceof System) {
-        this.$$removeSystem(instance);
-    } else {
-        throw new Error('can\'t remove "' + instance + '" from world "' + this.name + '"' );
-    }
-};
-
+/**
+ * Get add System by name
+ * @private
+ * @param {string} name
+ * @return {System}
+ */
 World.prototype.$$getSystemByName = function(name) {
     for (var i = 0, l = this.$$systems.length; i < l; i++) {
-        if (this.$$systems[i].name === name) {
+        if (this.$$systems[i].$name === name) {
             return this.$$systems[i];
         }
     }
@@ -1737,31 +2106,62 @@ World.prototype.$$getSystemByName = function(name) {
     return null;
 };
 
+/**
+ * Remove Entity or System for the World
+ * @param {Entity|System} instance
+ */
+World.prototype.$remove = function(instance) {
+    if (instance instanceof Entity) {
+        this.$$removeEntity(instance);
+    } else if(instance instanceof System) {
+        this.$$removeSystem(instance);
+    } else {
+        throw new Error('can\'t remove "' + instance + '" from world "' + this.$name + '"' );
+    }
+};
+
+/**
+ * Add system by instance
+ * @private
+ * @param {System} instance
+ * @return {System}
+ */
 World.prototype.$$addSystem = function(instance) {
     this.$$systems.push(instance);
 
     instance.$$addedHandler();
 
     if (isDefined(instance.$require)) {
-        instance.$setNodes(this.$queryByComponents(instance.$require));
+        instance.$$setNodes(this.$queryByComponents(instance.$require));
     }
 
     return instance;
 };
 
+/**
+ * Remove System by instance
+ * @private
+ * @param {System} instance
+ * @return {System}
+ */
 World.prototype.$$removeSystem = function(instance) {
     var index = this.$$systems.indexOf(instance);
     this.$$systems.splice(index);
 
-    instance.init();
+    instance.$$init();
 
     instance.$$removedHandler();
 
     return instance;
 };
 
+/**
+ * Get entity by name
+ * @param {string} value
+ * @return {Entity}
+ */
 World.prototype.$getByName = function(value) {
-    var node = this.$entities._head;
+    var node = this.$entities.$head;
     while(node) {
         var entity = node.instance;
         if (entity.$name === value) {
@@ -1773,27 +2173,45 @@ World.prototype.$getByName = function(value) {
     return null;
 };
 
+/**
+ * Get number of entities
+ * @return {number}
+ */
 World.prototype.$numEntities = function() {
     return this.$entities.length();
 };
 
+
 /**
- * @ngdoc function
- * @name GameEngine.e
- * @function
- * @description Build Entity
+ * @description Build and add Entity
+ * @see Entity
  *
+ * @example
  * <pre>
- GameEngine.e('player',
- [
- 'ngDOM', { color: 'rgb(255,0,0)' },
- 'ng2D', {x : 0, y: 50},
- 'ngControl',
- 'ngCollision'
+ //config as array
+ GameEngine.e('player', [
+   'ngDOM', { color: 'rgb(255,0,0)' },
+   'ng2D', { x: 0, y: 50 },
+   'ngControl',
+   'ngCollision'
  ]));
+
+ //or config as object
+ GameEngine.e('player', {
+   ngDOM: { color: 'rgb(255,0,0)' },
+   ng2D: {x : 0, y: 50},
+   ngControl: {},
+   ngCollision: {}
+ }));
+
  * </pre>
  *
  * @type {Function}
+ *
+ * @param {string} name (optional) entity name
+ * @param {object} config (optional) config object of entity
+ * @param {boolean} doesntAddToWorld (optional) doen't add entity to World
+ * @return {Entity}
  */
 World.prototype.$e = World.prototype.$entity = function() {
     var name = '';
@@ -1810,6 +2228,7 @@ World.prototype.$e = World.prototype.$entity = function() {
 
     if (isArray(arguments[componentsIndex])) {
         var componentsArray = arguments[componentsIndex];
+        componentsIndex++;
         for (var index = 0, count = componentsArray.length; index < count; index++) {
             if (isString(componentsArray[index])) {
                 var componentName = componentsArray[index];
@@ -1817,7 +2236,7 @@ World.prototype.$e = World.prototype.$entity = function() {
                 var componentConfig;
 
                 if (isUndefined(component)) {
-                    throw new Error('World ' + this.name + ' doesn\'t has component ' + componentName + '. Only ' + this.$$injectedComponents);
+                    throw new Error('World ' + this.$name + ' doesn\'t has component ' + componentName + '. Only ' + this.$$injectedComponents);
                 }
 
                 if (isObject(componentsArray[index + 1])) {
@@ -1832,9 +2251,17 @@ World.prototype.$e = World.prototype.$entity = function() {
         }
     } else if (isObject(arguments[componentsIndex])) {
         var components = arguments[componentsIndex];
+        componentsIndex++;
         for (var key in components) {
             if (components.hasOwnProperty(key) && key.charAt(0) !== '$') {
-                entity.$add(key, components[key]);
+                var value = components[key];
+                if (value === false) {
+                    entity[key] = null;
+                } else if (isEmptyObject(value) || value === null) {
+                    entity.$add(key, null);
+                } else {
+                    entity.$add(key, value);
+                }
             }
         }
 
@@ -1843,9 +2270,39 @@ World.prototype.$e = World.prototype.$entity = function() {
         }
     }
 
+    if(!arguments[componentsIndex]) {
+        this.$$addEntity(entity);
+    }
+
     return entity;
 };
 
+/**
+ * Check to see if an object is empty (contains no enumerable properties).
+ * get from jquery
+ *
+ * @ignore
+ * @param obj
+ * @return {boolean}
+ */
+function isEmptyObject( obj ) {
+    var name;
+    for ( name in obj ) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Define component.
+ * if component already defined under @name function return component with config customization.
+ * if component doesn't define function defines it the world under @name with @config state.
+ * But if config doesn't defined it's rise exception
+ *
+ * @param {string} name name of component
+ * @param {object} [config] state of component
+ * @return {Component}
+ */
 World.prototype.$c = World.prototype.$component = function(name, config) {
     var defaultConfig;
     var instance;
@@ -1856,12 +2313,18 @@ World.prototype.$c = World.prototype.$component = function(name, config) {
 
     defaultConfig = this.$$injectedComponents[name];
     if (isUndefined(defaultConfig)) {
-        throw new Error('Can\'t find component "' + name + '" definition. You need to add appropriate module to world.');
-    }
-
-    instance = copy(defaultConfig.defaultState);
-    if (isDefined(config)) {
-        swallowCopy(instance, config);
+        //define new custom component
+        if (isDefined(config) && config !== null) {
+            this.$$injectedComponents[name] = config;
+        } else {
+            throw new Error('Can\'t find component "' + name + '" definition. You need to add appropriate module to world.');
+        }
+        instance = config;
+    } else {
+        instance = copy(defaultConfig);
+        if (isDefined(config) && config !== null) {
+            swallowCopy(instance, config);
+        }
     }
 
     instance.$name = name;
@@ -1873,12 +2336,13 @@ World.prototype.$c = World.prototype.$component = function(name, config) {
  * Prepare handle function by annotation [], or strait function.
  * Return function with injected dependency.
  *
+ * @ignore
  * @param context
  * @param annotationPropertyName
  * @param customMatcher - custom annotation matcher. get array of arguments, return function(argsTarget, argsSource) {} to match arguments
  * @return {*}
  */
-World.prototype.annotatedFunctionFactory = function annotatedFunctionFactory(context, annotationPropertyName, customMatcher) {
+World.prototype.$$annotatedFunctionFactory = function (context, annotationPropertyName, customMatcher) {
     var annotation = context[annotationPropertyName];
     if (isUndefined(annotation)) {
         return null;
@@ -1899,6 +2363,12 @@ World.prototype.annotatedFunctionFactory = function annotatedFunctionFactory(con
     }
 };
 
+/**
+ * @ignore
+ * @param annotation
+ * @param name
+ * @return {*}
+ */
 function matchFactory(annotation, name) {
     var index = annotation.indexOf(name);
     if (index >= 0) {
@@ -1910,35 +2380,72 @@ function matchFactory(annotation, name) {
     }
 }
 
+/**
+ * @ignore
+ * @param annotation
+ * @return {Function}
+ */
 function beforeAfterUpdateCustomMatcher(annotation) {
     var match$time = matchFactory(annotation, '$time');
-    var match$nodes = matchFactory(annotation, '$nodes');
+    var match$entities = matchFactory(annotation, '$entities');
 
     return function(argsTarget, argsSource) {
         match$time(argsTarget, argsSource[0]);
-        match$nodes(argsTarget, argsSource[1]);
+        match$entities(argsTarget, argsSource[1]);
     };
 }
 
 /**
- * Build instance of System
+ * Build instance of System. Instantiate injected system or define custom system.
+ * @see System
+ * @example
+ <pre>
+     world.$s('healerSystem', {
+
+        //apply to components:
+        $require: ['ngLife', 'healer'],
+
+        //iterate each frame for each entity
+        $update: ['$node', function($node) {
+            if ($node.ngLife.life <= this.healer.maxLife) {
+                //heals entity
+                $node.ngLife.life += this.healer.power;
+            } else {
+                //stop healing when life reach of maxLife
+                $node.$remove('healer');
+            }
+        }]
+    });
+ </pre>
  *
- * @type {Function}
+ * @param {string} name
+ * @param {object} [config]
+ * @return {System}
  */
 World.prototype.$s = World.prototype.$system = function(name, config) {
     var defaultConfig = this.$$injectedSystems[name];
+
+    if (isUndefined(defaultConfig) && isUndefined(config)) {
+        throw new Error('Instance of system "' + name + '" doesn\'t injected in the world "' + this.$name + '".');
+    }
+
     var systemInstance = new System();
-    copy(defaultConfig, systemInstance, false);
+
+    if (isDefined(defaultConfig)) {
+        copy(defaultConfig, systemInstance, false);
+    } else {
+        systemInstance.$name = systemInstance.$name || name;
+    }
 
     if (isDefined(config)) {
         copy(config, systemInstance, false);
     }
 
-    systemInstance.$$beforeUpdateHandler = this.annotatedFunctionFactory(systemInstance, '$beforeUpdate', beforeAfterUpdateCustomMatcher);
+    systemInstance.$$beforeUpdateHandler = this.$$annotatedFunctionFactory(systemInstance, '$beforeUpdate', beforeAfterUpdateCustomMatcher);
     if (systemInstance.$$beforeUpdateHandler) {
         this.$$beforeUpdateHandledSystems.push(systemInstance);
     }
-    systemInstance.$$afterUpdateHandler = this.annotatedFunctionFactory(systemInstance, '$afterUpdate', beforeAfterUpdateCustomMatcher);
+    systemInstance.$$afterUpdateHandler = this.$$annotatedFunctionFactory(systemInstance, '$afterUpdate', beforeAfterUpdateCustomMatcher);
     if (systemInstance.$$afterUpdateHandler) {
         this.$$afterUpdateHandledSystem.push(systemInstance);
     }
@@ -1953,8 +2460,8 @@ World.prototype.$s = World.prototype.$system = function(name, config) {
 
             var args = this.$$getDependencyByAnnotation(updateAnnotate);
 
-            var match$node = matchFactory(updateAnnotate, '$node');
-            var match$nodes = matchFactory(updateAnnotate, '$nodes');
+            var match$entity = matchFactory(updateAnnotate, '$entity');
+            var match$entities = matchFactory(updateAnnotate, '$entities');
             var match$time = matchFactory(updateAnnotate, '$time');
             var match$world = matchFactory(updateAnnotate, '$world');
 
@@ -1962,12 +2469,12 @@ World.prototype.$s = World.prototype.$system = function(name, config) {
 
             var updateFunction = factoryOfFastFunction(updateHandler, systemInstance, args, '$$update');
 
-            var updateForEveryNode = updateAnnotate.indexOf('$node') >= 0;
+            var updateForEveryNode = updateAnnotate.indexOf('$entity') >= 0;
             if (updateForEveryNode) {
-                systemInstance.$$updateHandler = systemInstance.$$updateEveryNode(function(node, time) {
+                systemInstance.$$updateHandler = systemInstance.$$updateEveryNode(function(entity, time) {
                     match$time(args, time);
-                    match$node(args, node);
-                    match$nodes(args, systemInstance.$nodes);
+                    match$entity(args, entity);
+                    match$entities(args, systemInstance.$nodes);
                     match$world(args, worldInstance);
 
                     updateFunction();
@@ -1975,7 +2482,7 @@ World.prototype.$s = World.prototype.$system = function(name, config) {
             } else {
                 systemInstance.$$updateHandler = function(time) {
                     match$time(args, time);
-                    match$nodes(args, systemInstance.$nodes);
+                    match$entities(args, systemInstance.$nodes);
                     match$world(args, worldInstance);
 
                     updateFunction();
@@ -1989,37 +2496,44 @@ World.prototype.$s = World.prototype.$system = function(name, config) {
     }
 
     if (isDefined(systemInstance.$added)) {
-        systemInstance.$$addedHandler = this.annotatedFunctionFactory(systemInstance, '$added', noop);
+        systemInstance.$$addedHandler = this.$$annotatedFunctionFactory(systemInstance, '$added', noop);
     } else {
         systemInstance.$$addedHandler = noop;
     }
 
     if (isDefined(systemInstance.$removed)) {
-        systemInstance.$$removedHandler = this.annotatedFunctionFactory(systemInstance, '$removed', noop);
+        systemInstance.$$removedHandler = this.$$annotatedFunctionFactory(systemInstance, '$removed', noop);
     } else {
         systemInstance.$$removedHandler = noop;
     }
 
-    if (isDefined(systemInstance.$addNode)) {
+    if (isDefined(systemInstance.$addEntity)) {
         //TODO : inject all dependency
-        systemInstance.$$addNodeHandler = this.annotatedFunctionFactory(systemInstance, '$addNode', addRemoveNodeCustomMatcher);
+        systemInstance.$$addEntityHandler = this.$$annotatedFunctionFactory(systemInstance, '$addEntity', addRemoveNodeCustomMatcher);
     } else {
-        systemInstance.$$addNodeHandler = noop;
+        systemInstance.$$addEntityHandler = noop;
     }
 
-    if (isDefined(systemInstance.$removeNode)) {
+    if (isDefined(systemInstance.$removeEntity)) {
         //TODO : inject all dependency
-        systemInstance.$$removeNodeHandler = this.annotatedFunctionFactory(systemInstance, '$removeNode', addRemoveNodeCustomMatcher);
+        systemInstance.$$removeEntityHandler = this.$$annotatedFunctionFactory(systemInstance, '$removeEntity', addRemoveNodeCustomMatcher);
     } else {
-        systemInstance.$$removeNodeHandler = noop;
+        systemInstance.$$removeEntityHandler = noop;
     }
+
+    this.$$addSystem(systemInstance);
 
     return systemInstance;
 };
 
+/**
+ * @ignore
+ * @param annotation
+ * @return {*}
+ */
 function addRemoveNodeCustomMatcher(annotation) {
     for (var i = 0, l = annotation.length; i < l; i++) {
-        if (annotation[i] === '$node') {
+        if (annotation[i] === '$entity') {
             return function(argsTarget, argsSource) {
                 argsTarget[i] = argsSource[0];
             };
@@ -2039,6 +2553,7 @@ function addRemoveNodeCustomMatcher(annotation) {
  * BeforeMatch we are verify that we are not in match phase. Is so, just store operation.
  * in AfterMatch we are execute each stored operations
  *
+ * @ignore
  * @param entity
  */
 World.prototype.$$matchNewEntityToFamilies = function (entity) {
@@ -2054,6 +2569,10 @@ World.prototype.$$matchNewEntityToFamilies = function (entity) {
     afterMatch(entity, 'matchNewEntityToFamilies');
 };
 
+/**
+ * @ignore
+ * @param entity
+ */
 World.prototype.$$matchRemoveEntityToFamilies = function (entity) {
     if (!beforeMatch(entity, 'matchRemoveEntityToFamilies', this, this.$$matchRemoveEntityToFamilies, arguments)) {
         return;
@@ -2067,6 +2586,11 @@ World.prototype.$$matchRemoveEntityToFamilies = function (entity) {
     afterMatch(entity, 'matchRemoveEntityToFamilies');
 };
 
+/**
+ * @ignore
+ * @param entity
+ * @param component
+ */
 World.prototype.$$onComponentAdd = function(entity, component) {
     if (!beforeMatch(entity, 'onComponentAdd', this, this.$$onComponentAdd, arguments)) {
         return;
@@ -2080,6 +2604,11 @@ World.prototype.$$onComponentAdd = function(entity, component) {
     afterMatch(entity, 'onComponentAdd');
 };
 
+/**
+ * @ignore
+ * @param entity
+ * @param component
+ */
 World.prototype.$$onComponentRemove = function(entity, component) {
     if (!beforeMatch(entity, 'onComponentRemove', this, this.$$onComponentRemove, arguments)) {
         return;
@@ -2093,6 +2622,15 @@ World.prototype.$$onComponentRemove = function(entity, component) {
     afterMatch(entity, 'onComponentRemove');
 };
 
+/**
+ * @ignore
+ * @param entity
+ * @param phase
+ * @param context
+ * @param phaseFunction
+ * @param args
+ * @return {boolean}
+ */
 function beforeMatch(entity, phase, context, phaseFunction, args) {
     if (isUndefined(entity._matchingToFamily)) {
         entity._matchingToFamily = {
@@ -2120,6 +2658,11 @@ function beforeMatch(entity, phase, context, phaseFunction, args) {
     return true;
 }
 
+/**
+ * @ignore
+ * @param entity
+ * @param phase
+ */
 function afterMatch(entity, phase) {
     entity._matchingToFamily.processing = false;
     var phases = entity._matchingToFamily.phases;
@@ -2135,6 +2678,12 @@ function afterMatch(entity, phase) {
     }
 }
 
+/**
+ * Query nodes by them components.
+ * @param {array|string} request The request filter
+ * @return {*}
+ * @see Entity
+ */
 World.prototype.$queryByComponents = function(request) {
     var componentsArray;
     var componentsString;
@@ -2145,6 +2694,8 @@ World.prototype.$queryByComponents = function(request) {
     } else if (isString(request)) {
         componentsString = request;
         componentsArray = request.split(',');
+    } else {
+        throw new Error('Can\'t query entities by ' + request);
     }
 
     if (this.$$families[componentsString]) {
@@ -2166,6 +2717,10 @@ World.prototype.$queryByComponents = function(request) {
     return family.nodes;
 };
 
+/**
+ * Update the World by interval
+ * @param {number} time The time interval
+ */
 World.prototype.$update = function(time) {
     this.$$updating = true;
     time = time || this.$$interval;
@@ -2189,6 +2744,9 @@ World.prototype.$update = function(time) {
     this.$$updating = false;
 };
 
+/**
+ * Start update the World every 1/60 of second
+ */
 World.prototype.$start = function() {
     if (this.$playing) {
         return;
@@ -2212,6 +2770,9 @@ World.prototype.$start = function() {
     })(0);
 };
 
+/**
+ * Stop update the World every 1/60 of second
+ */
 World.prototype.$stop = function() {
     if (!this.$playing) {
         return;
