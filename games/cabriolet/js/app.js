@@ -9,7 +9,7 @@ var width = 640,
     debugDraw = false,
     renderWithPixiJs = true;
 
-var game = angular.module('RedCabrioletGame', []);
+//var game = angular.module('RedCabrioletGame', []);
 
 var world = darlingjs.world('myGame', [
     'myApp',
