@@ -14,8 +14,8 @@ m.$s('ngPixijsMovieClip', {
 
     _frames: null,
 
-    $addNode: function($node) {
-        var spriteAtlas = $node.ngMovieClip;
+    $addEntity: function($entity) {
+        var spriteAtlas = $entity.ngMovieClip;
         var self = this;
         LoadAtlas(spriteAtlas.url)
             .then(function() {
@@ -42,14 +42,14 @@ m.$s('ngPixijsMovieClip', {
                     movieClip.anchor.y = 0.5;
                 }
 
-                var ng2DSize = $node.ng2DSize;
+                var ng2DSize = $entity.ng2DSize;
 
                 if (ng2DSize && spriteAtlas.fitToSize) {
                     movieClip.width = ng2DSize.width;
                     movieClip.height = ng2DSize.height;
                 }
 
-                $node.$add('ngPixijsSprite', {
+                $entity.$add('ngPixijsSprite', {
                     sprite: movieClip,
                     fitToSize: spriteAtlas.fitToSize
                 });
@@ -64,8 +64,8 @@ m.$s('ngPixijsSheetSprite', {
 
     },
 
-    $addNode: ['$node', function($node) {
-        var spriteAtlas = $node.ngSpriteAtlas;
+    $addEntity: ['$entity', function($entity) {
+        var spriteAtlas = $entity.ngSpriteAtlas;
         LoadAtlas(spriteAtlas.url)
             .then(function() {
                 var sprite = PIXI.Sprite.fromFrame(spriteAtlas.name);
@@ -77,14 +77,14 @@ m.$s('ngPixijsSheetSprite', {
                     sprite.anchor.y = 0.5;
                 }
 
-                var ng2DSize = $node.ng2DSize;
+                var ng2DSize = $entity.ng2DSize;
 
                 if (ng2DSize && spriteAtlas.fitToSize) {
                     sprite.width = ng2DSize.width;
                     sprite.height = ng2DSize.height;
                 }
 
-                $node.$add('ngPixijsSprite', {
+                $entity.$add('ngPixijsSprite', {
                     sprite: sprite
                 });
             });
@@ -130,8 +130,8 @@ m.$s('ngPixijsSprite', {
 
     },
 
-    $addNode: ['$node', function($node) {
-        var ngSprite = $node.ngSprite;
+    $addEntity: ['$entity', function($entity) {
+        var ngSprite = $entity.ngSprite;
 
         // create a texture from an image path
         ngSprite._texture = PIXI.Texture.fromImage(ngSprite.name);
@@ -143,7 +143,7 @@ m.$s('ngPixijsSprite', {
         sprite.anchor.x = ngSprite.anchor.x || 0.5;
         sprite.anchor.y = ngSprite.anchor.y || 0.5;
 
-        var ng2DSize = $node.ng2DSize;
+        var ng2DSize = $entity.ng2DSize;
         if(ng2DSize && ngSprite.fitToSize) {
             ngSprite._texture.addEventListener( 'update', function() {
                 sprite.width = ng2DSize.width;
@@ -153,7 +153,7 @@ m.$s('ngPixijsSprite', {
             //sprite.scale.y = 0.5;
         }
 
-        $node.$add('ngPixijsSprite', {
+        $entity.$add('ngPixijsSprite', {
             sprite: sprite
         });
     }]
@@ -171,13 +171,49 @@ m.$c('ngBindLifeToAlpha', {
 m.$s('ngBindLifeToAlpha', {
     $require: ['ngBindLifeToAlpha', 'ngLife', 'ngPixijsSprite'],
 
-    $update: ['$node', function($node) {
-        var sprite = $node.ngPixijsSprite.sprite;
-        sprite.alpha = $node.ngBindLifeToAlpha.min + $node.ngLife.life * ($node.ngBindLifeToAlpha.max - $node.ngBindLifeToAlpha.min);
+    $update: ['$entity', function($entity) {
+        var sprite = $entity.ngPixijsSprite.sprite;
+        sprite.alpha = $entity.ngBindLifeToAlpha.min + $entity.ngLife.life * ($entity.ngBindLifeToAlpha.max - $entity.ngBindLifeToAlpha.min);
+    }]
+});
+
+m.$s('ngLayer', {
+    layerName: null
+});
+
+m.$s('ngPixijsStaticZ', {
+    $require: ['ngLayer', 'ngPixijsSprite'],
+
+    //layers with fixed distance. Use for applying z-depth
+    layers: null,
+    _layers: {},
+
+    $added: ['ngPixijsStage', function(ngPixijsStage) {
+        if (this.layers) {
+            for (var i = 0, count = this.layers.length; i < count; i++) {
+                var layerName = this.layers[i];
+                var layer = new PIXI.DisplayObjectContainer();
+                ngPixijsStage._stage.addChild(layer);
+                this._layers[layerName] = layer;
+            }
+        }
+    }],
+
+    $addEntity: ['$entity', function($entity) {
+        var layer = this._layers[$entity.ngLayer.layerName];
+        layer.addChild($entity.ngPixijsSprite.sprite);
+    }],
+
+    $removeEntity: ['$entity', 'ngPixijsStage', function($entity, ngPixijsStage) {
+        if ($entity.ngPixijsSprite.sprite) {
+            ngPixijsStage._stage.addChild($entity.ngPixijsSprite.sprite);
+        }
     }]
 });
 
 m.$s('ngPixijsStage', {
+    $require: ['ng2D', 'ngPixijsSprite'],
+
     width: 640,
     height: 480,
 
@@ -188,9 +224,8 @@ m.$s('ngPixijsStage', {
 
     useWebGL: true,
 
+    _stage: null,
     _center: {x:0.0, y:0.0},
-
-    $require: ['ng2D', 'ngPixijsSprite'],
 
     $added: function() {
         // create an new instance of a pixi stage
@@ -227,42 +262,38 @@ m.$s('ngPixijsStage', {
         document.removeChild(this._renderer.view);
     },
 
-    $addNode: function($node) {
-        this._stage.addChild($node.ngPixijsSprite.sprite);
+    $addEntity: function($entity) {
+        this._stage.addChild($entity.ngPixijsSprite.sprite);
     },
 
-    $removeNode: function($node) {
-        this._stage.removeChild($node.ngPixijsSprite.sprite);
+    $removeEntity: function($entity) {
+        var parent = $entity.ngPixijsSprite.sprite.parent;
+        parent.removeChild($entity.ngPixijsSprite.sprite);
+        $entity.ngPixijsSprite.sprite = null;
     },
 
-    $update: ['$node', 'ng2DViewPort', function($node, ng2DViewPort) {
-        var sprite = $node.ngPixijsSprite;
+    $update: ['$entity', 'ng2DViewPort', function($entity, ng2DViewPort) {
+        var sprite = $entity.ngPixijsSprite;
 
-        var ng2D = $node.ng2D;
+        var ng2D = $entity.ng2D;
 
         sprite.sprite.position.x = ng2D.x + this._center.x;
         sprite.sprite.position.y = ng2D.y + this._center.y;
 
-        if (!($node.ngLockViewPort && $node.ngLockViewPort.lockX)) {
+        if (!($entity.ngLockViewPort && $entity.ngLockViewPort.lockX)) {
             sprite.sprite.position.x -= ng2DViewPort.lookAt.x;
         }
 
-        if (!($node.ngLockViewPort && $node.ngLockViewPort.lockY)) {
+        if (!($entity.ngLockViewPort && $entity.ngLockViewPort.lockY)) {
             sprite.sprite.position.y -= ng2DViewPort.lookAt.y;
         }
 
-        var ngParallax = $node.ngParallax;
-        if (ngParallax) {
-            sprite.sprite.position.x *= ngParallax.basis;
-            sprite.sprite.position.y *= ngParallax.basis;
-        }
-
-        var ng2DRotation = $node.ng2DRotation;
+        var ng2DRotation = $entity.ng2DRotation;
         if (ng2DRotation) {
             sprite.sprite.rotation = ng2DRotation.rotation;
         }
 
-        var ng2DSize = $node.ng2DSize;
+        var ng2DSize = $entity.ng2DSize;
 
         if (ng2DSize && sprite.fitToSize) {
             sprite.sprite.scale.x = ng2DSize.width / sprite.sprite.width;
@@ -270,8 +301,8 @@ m.$s('ngPixijsStage', {
         }
     }],
 
-    $afterUpdate: ['$nodes', function($nodes) {
-        //$nodes.forEach(this.$updateNode);
+    $afterUpdate: ['$entities', function($entities) {
+        //$entities.forEach(this.$updateNode);
         // render the stage
         this._renderer.render(this._stage);
     }],
