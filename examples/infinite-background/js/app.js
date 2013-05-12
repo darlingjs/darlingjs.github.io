@@ -11,8 +11,11 @@
         'ngFlatland',
         'ngCyclic',
         'ngPixijsAdapter',
-        'ngStats'
+        'ngStats',
+        'ngPerformance'
     ]);
+
+    world.$add('ngPerformanceStartLog');
 
     world.$add('ngStatsBegin');
 
@@ -52,8 +55,10 @@
         domId: 'gameView'
     });
 
-    var xStep = 64,
-        yStep = 64,
+    world.$add('ngPerformanceStopLog');
+
+    var xStep = 32,
+        yStep = 32,
         icount = Math.ceil(width / xStep) + 1,
         jcount = Math.ceil(height / yStep) + 1,
         pixels = ['blue-pixel.jpg', 'green-pixel.jpg', 'yellow-pixel.jpg', 'purple-pixel.jpg'];
