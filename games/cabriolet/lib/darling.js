@@ -1,5 +1,5 @@
 /**
- * @license darlingjs v0.0.4 2013-05-05 by Eugene Krevenets.
+ * @license darlingjs v0.0.6 2013-05-10 by Eugene Krevenets.
  * Component & Entity based javascript game engine. Decoupled from any visualization, physics, and so on. With injections and modules based on AngularJS.
  * http://darlingjs.github.io/
  *
@@ -72,7 +72,7 @@ var _darlingutil = window.darlingutil;
  */
 var darlingutil = window.darlingutil = window.darlingutil||{};
 
-darlingutil.version = '0.0.4';
+darlingutil.version = '0.0.6';
 
 /**
  * @ngdoc function
@@ -414,7 +414,13 @@ function isTypeOf(o, t) {
  *     provided, must be of the same type as `source`.
  * @returns {*} The copy or updated `destination`, if `destination` was specified.
  */
-function copy(source, destination, deleteAllDestinationProperties){
+function copy(source, destination, deleteAllDestinationProperties, depth){
+    if (++depth > 10) {
+        throw new Error('!');
+    }
+    if (!depth) {
+        depth = 0;
+    }
     if (isWindow(source)) {
         throw new Error("Can't copy Window");
     }
@@ -422,11 +428,11 @@ function copy(source, destination, deleteAllDestinationProperties){
         destination = source;
         if (source) {
             if (isArray(source)) {
-                destination = copy(source, []);
+                destination = copy(source, [], false, depth);
             } else if (isDate(source)) {
                 destination = new Date(source.getTime());
             } else if (isObject(source)) {
-                destination = copy(source, {});
+                destination = copy(source, {}, false, depth);
             }
         }
     } else {
@@ -436,7 +442,7 @@ function copy(source, destination, deleteAllDestinationProperties){
         if (isArray(source)) {
             destination.length = 0;
             for ( var i = 0; i < source.length; i++) {
-                destination.push(copy(source[i]));
+                destination.push(copy(source[i], null, false, depth));
             }
         } else {
             if (deleteAllDestinationProperties) {
@@ -446,7 +452,7 @@ function copy(source, destination, deleteAllDestinationProperties){
             }
             for ( var key in source) {
                 if (source.hasOwnProperty(key)) {
-                    destination[key] = copy(source[key]);
+                    destination[key] = copy(source[key], null, false, depth);
                 }
             }
         }
@@ -1085,7 +1091,7 @@ var _darlingjs = window.darlingjs;
  * Uses for creating modules and game world.
  */
 var darlingjs = window.darlingjs || (window.darlingjs = {});
-darlingjs.version = '0.0.4';
+darlingjs.version = '0.0.6';
 
 var worlds = {};
 
@@ -1588,16 +1594,19 @@ List.prototype.forEach = function(callback, context, arg) {
         return;
     }
 
-    var node = this.$head;
+    var node = this.$head,
+        next;
     if (context) {
         while(node) {
+            next = node.$next;
             callback.call(context, node.instance, arg);
-            node = node.$next;
+            node = next;
         }
     } else {
         while(node) {
+            next = node.$next;
             callback(node.instance, arg);
-            node = node.$next;
+            node = next;
         }
     }
 };
@@ -2049,6 +2058,7 @@ World.prototype.$$addEntity = function(instance) {
  * @return {Entity}
  */
 World.prototype.$$removeEntity = function(instance) {
+    instance.$$world = null;
     this.$entities.remove(instance);
     this.$$matchRemoveEntityToFamilies(instance);
     instance.off('add', this.$$onComponentAdd);
