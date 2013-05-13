@@ -8,6 +8,7 @@ canvas {
     -ms-interpolation-mode: nearest-neighbor;
 }
 
+/*
 @media (min-width: 641px) {
     canvas {
         position: absolute;
@@ -18,7 +19,7 @@ canvas {
         margin: auto;
     }
 }
-
+*/
 
 h1 {
     font-family: 'Lobster', cursive; font-weight: 400;
