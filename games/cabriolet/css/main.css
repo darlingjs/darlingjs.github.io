@@ -8,8 +8,7 @@ canvas {
     -ms-interpolation-mode: nearest-neighbor;
 }
 
-/*
-@media (min-width: 641px) {
+@media (max-width: 641px) {
     canvas {
         position: absolute;
         left: 0;
@@ -17,9 +16,16 @@ canvas {
         top: 0;
         bottom: 0;
         margin: auto;
+        margin: auto;
+        -webkit-transform: rotate(0.25turn);
+        -moz-transform: rotate(0.25turn);
+        transform: rotate(0.25turn);
     }
 }
-*/
+
+body {
+    overflow: hidden;
+}
 
 h1 {
     font-family: 'Lobster', cursive; font-weight: 400;
