@@ -8,13 +8,13 @@
 
     var m = darlingjs.m('ngPerformance');
 
-    m.$s('ngPerformanceStartLog', {
+    m.$s('ngPerformanceLogBegin', {
         $beforeUpdate: function() {
             this.startTime = Date.now();
         }
     });
 
-    m.$s('ngPerformanceStopLog', {
+    m.$s('ngPerformanceLogEnd', {
         enabled: true,
 
         logToConsole: true,
@@ -28,7 +28,7 @@
         _samplesForPerformance: [],
         _samplesForFPS: [],
 
-        $afterUpdate: ['ngPerformanceStartLog', '$time', function(ngPerformanceStartLog, $time) {
+        $afterUpdate: ['ngPerformanceLogBegin', '$time', function(ngPerformanceLogBegin, $time) {
             if (!this.enabled) {
                 return;
             }
@@ -40,7 +40,7 @@
             }
 
             var current = Date.now(),
-                delta = current - ngPerformanceStartLog.startTime;
+                delta = current - ngPerformanceLogBegin.startTime;
 
             this._samplesForPerformance[this._sampleIndex] = delta;
 
