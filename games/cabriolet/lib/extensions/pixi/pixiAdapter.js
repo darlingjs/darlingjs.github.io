@@ -276,7 +276,7 @@
         shiftX: 0.0,
         shiftY: 0.0,
 
-        fitToWindow: true,
+        fitToWindow: false,
         _onResizeDefaultHandler: null,
 
         domId: '',
@@ -295,7 +295,14 @@
             var width, height;
             var view;
             if (this.domId !== null && this.domId !== '') {
-                this._canvas = view = darlingutil.placeCanvasInStack(this.domId, this.width, this.height);
+                view = darlingutil.getCanvas(this.domId);
+                if (view) {
+                    view.width = this.width;
+                    view.height = this.height;
+                } else {
+                    view = darlingutil.placeCanvasInStack(this.domId, this.width, this.height);
+                }
+                this._canvas = view;
                 width = view.width;
                 height = view.height;
             } else {
