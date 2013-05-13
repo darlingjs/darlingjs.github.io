@@ -10,12 +10,11 @@ canvas {
 
 @media (max-width: 641px) {
     canvas {
-        position: absolute;
+        position: fixed;
         left: 0;
         right: 0;
         top: 0;
         bottom: 0;
-        margin: auto;
         margin: auto;
         -webkit-transform: rotate(0.25turn);
         -moz-transform: rotate(0.25turn);
