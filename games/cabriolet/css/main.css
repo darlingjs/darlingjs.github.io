@@ -16,9 +16,11 @@ canvas {
         top: 0;
         bottom: 0;
         margin: auto;
+        /*
         -webkit-transform: rotate(0.25turn);
         -moz-transform: rotate(0.25turn);
         transform: rotate(0.25turn);
+        */
     }
 }
 
