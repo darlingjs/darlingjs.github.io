@@ -1,9 +1,33 @@
+canvas {
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+}
+
+@media (min-width: 641px) {
+    canvas {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+    }
+}
+
+
 h1 {
     font-family: 'Lobster', cursive; font-weight: 400;
 }
 
 .center {
-    margin-left: -25%; padding-left: 50%;
+    /*margin-left: -25%;*/
+    padding-left: 25%;
+    /*text-align: center;*/
 }
 
 body {
@@ -29,6 +53,12 @@ a:active {
 }
 
 .add-a-little-space-up-and-down {
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin-bottom: 32px;
+    margin-top: 32px;
+}
+
+.gameview {
+    height: 480px;
+    width: 640px;
+    position:relative
 }
