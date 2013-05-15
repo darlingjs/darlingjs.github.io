@@ -63,6 +63,7 @@ world.$add('ngBox2DSensorSystem');
 world.$add('ngBox2DCollision');
 
 world.$add('ngEnableMotorOnKeyDown');
+world.$add('ngEnableMotorOnAccelerometer');
 world.$add('ngBox2DEnableMotorSystem');
 world.$add('ngBox2DMotorWithAcceleration');
 //world.$add('ng2DViewPort', {
@@ -436,6 +437,11 @@ function vehicle(x, y, name, newOps){
             keyCode: [37, 65],
             keyCodeReverse: [39, 68]
         }:{},
+        'ngEnableMotorOnAccelerometer': ops.rearWheelDrive?{
+            xAxis: true,
+            yAxis: false,
+            zAxis: false,
+        }:{},
         'ngSelected': {},
         'ngMotorWithAcceleration': {
             min:-ops.wheelMaxSpeed,
@@ -458,6 +464,12 @@ function vehicle(x, y, name, newOps){
         'ngEnableMotorOnKeyDown': ops.frontWheelDrive?{
             keyCode: [37, 65],
             keyCodeReverse: [39, 68]
+        }:{},
+        'ngEnableMotorOnAccelerometer': ops.rearWheelDrive?{
+            invert: false,
+            xAxis: false,
+            yAxis: false,
+            zAxis: false
         }:{},
         'ngSelected': {},
         'ngMotorWithAcceleration': {
