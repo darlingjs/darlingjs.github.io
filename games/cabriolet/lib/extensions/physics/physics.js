@@ -74,7 +74,7 @@
         xAxis: false,
         yAxis: false,
         zAxis: false,
-        edge: 1.5,
+        edge: 15.0,
         invert: true
     });
 
@@ -141,9 +141,9 @@
         $added: function() {
             var self = this;
             window.addEventListener('deviceorientation', this._handler = function(e) {
-                self._acceleration.x = e.alpha - self.calibration.alpha;
-                self._acceleration.y = e.beta - self.calibration.beta;
-                self._acceleration.z = e.gamma - self.calibration.gamma;
+                self._acceleration.x = e.alpha - self._calibration.alpha;
+                self._acceleration.y = e.beta - self._calibration.beta;
+                self._acceleration.z = e.gamma - self._calibration.gamma;
             });
         },
 
