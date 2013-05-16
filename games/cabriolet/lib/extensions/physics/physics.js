@@ -167,24 +167,25 @@
             }
 
             if (enablingMotor) {
+                if (!$entity.ngEnableMotor) {
+                    $entity.$add('ngEnableMotor');
+                }
                 if (reverse) {
-                    if ($entity.ngEnableMotor) {
-                        $entity.$remove('ngEnableMotor');
-                    }
                     if (!$entity.ngEnableMotorReverse) {
                         $entity.$add('ngEnableMotorReverse');
                     }
                 } else {
-                    if (!$entity.ngEnableMotor) {
-                        $entity.$add('ngEnableMotor');
-                    }
                     if ($entity.ngEnableMotorReverse) {
                         $entity.$remove('ngEnableMotorReverse');
                     }
                 }
             } else {
-                $entity.$remove('ngEnableMotorReverse');
-                $entity.$remove('ngEnableMotor');
+                if ($entity.ngEnableMotorReverse) {
+                    $entity.$remove('ngEnableMotorReverse');
+                }
+                if ($entity.ngEnableMotor) {
+                    $entity.$remove('ngEnableMotor');
+                }
             }
         },
 
