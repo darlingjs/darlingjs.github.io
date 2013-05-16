@@ -134,26 +134,26 @@
     m.$s('ngEnableMotorOnAccelerometer', {
         $require: ['ngEnableMotorOnAccelerometer', 'ngSelected'],
 
-        _acceleration: {x:0,y:0,z:0},
-        _previousHandler: null,
+        _calibration: {alpha:0.0, beta:0.0, gamma:0.0},
+        _acceleration: {x:0.0, y:0.0, z:0.0},
+        _handler: null,
 
         $added: function() {
-            this._previousHandler = window.ondevicemotion || function() {};
             var self = this;
-            window.ondevicemotion = function(event) {
-                self._previousHandler(event);
-                self._acceleration = event.accelerationIncludingGravity;
-                console.log('accel : ', self._acceleration.x, self._acceleration.y, self._acceleration.z);
-            };
+            window.addEventListener('deviceorientation', this._handler = function(e) {
+                self._acceleration.x = e.alpha - self.calibration.alpha;
+                self._acceleration.y = e.beta - self.calibration.beta;
+                self._acceleration.z = e.gamma - self.calibration.gamma;
+            });
         },
 
         $remove: function() {
-            window.ondevicemotion = this._previousHandler;
+            window.removeEventListener('deviceorientation', this._handler);
         },
 
         enableMotorIsInInterval: function($entity, value, edge, invert) {
             var enablingMotor = false;
-            var reverse = false
+            var reverse = false;
             if (value > edge) {
                 enablingMotor = true;
                 reverse = false;
