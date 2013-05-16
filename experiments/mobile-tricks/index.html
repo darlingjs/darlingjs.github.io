@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="MobileTricks">
+<head>
+  <title>Mobile Tricks</title>
+</head>
+<body>
+  <div ng-controller="MobileGyroCtrl">
+    <div>X: <span>{{x}}</span></div>
+    <div>Y: <span>{{y}}</span></div>
+    <div>Z: <span>{{z}}</span></div>
+    <div>Source: <span>{{source}}</span></div>
+  </div>
+  <div ng-controller="MobileTouchesCtrl">
+    <h1>Touches</h1>
+    <h2>Start</h2>
+    <ul>
+      <li ng-repeat="touch in touchstart">
+        <span>{{$index}}</span>
+        <span>({{touch.pageX}}, {{touch.pageY}})</span>
+      </li>
+    </ul>
+    <h2>Move</h2>
+    <ul>
+      <li ng-repeat="touch in touchmove">
+        <span>{{$index}}</span>
+        <span>({{touch.pageX}}, {{touch.pageY}})</span>
+      </li>
+    </ul>
+    <h2>End</h2>
+    <ul>
+      <li ng-repeat="touch in touchend">
+        <span>{{$index}}</span>
+        <span>({{touch.pageX}}, {{touch.pageY}})</span>
+      </li>
+    </ul>
+  </div>
+  <canvas id="canvas"/>
+  <script src="vendor/angular.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
