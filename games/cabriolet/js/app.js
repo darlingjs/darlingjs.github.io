@@ -438,9 +438,9 @@ function vehicle(x, y, name, newOps){
             keyCodeReverse: [39, 68]
         }:{},
         'ngEnableMotorOnAccelerometer': ops.rearWheelDrive?{
-            xAxis: true,
+            xAxis: false,
             yAxis: false,
-            zAxis: false,
+            zAxis: true
         }:{},
         'ngSelected': {},
         'ngMotorWithAcceleration': {
@@ -466,10 +466,9 @@ function vehicle(x, y, name, newOps){
             keyCodeReverse: [39, 68]
         }:{},
         'ngEnableMotorOnAccelerometer': ops.rearWheelDrive?{
-            invert: false,
             xAxis: false,
             yAxis: false,
-            zAxis: false
+            zAxis: true
         }:{},
         'ngSelected': {},
         'ngMotorWithAcceleration': {
