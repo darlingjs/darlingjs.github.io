@@ -28,24 +28,30 @@ function MobileGyroCtrl($scope) {
 
     function setupListeners() {
         window.addEventListener('MozOrientation', function(e) {
-            $scope.x = measurements.x = e.x - calibration.x;
-            $scope.y = measurements.y = e.y - calibration.y;
-            $scope.z = measurements.z = e.z - calibration.z;
-            $scope.source = 'MozOrientation';
+            $scope.$apply(function() {
+                $scope.x = measurements.x = e.x - calibration.x;
+                $scope.y = measurements.y = e.y - calibration.y;
+                $scope.z = measurements.z = e.z - calibration.z;
+                $scope.source = 'MozOrientation';
+            });
         }, true);
 
         window.addEventListener('devicemotion', function(e) {
-            $scope.x = measurements.x = e.accelerationIncludingGravity.x - calibration.x;
-            $scope.y = measurements.y = e.accelerationIncludingGravity.y - calibration.y;
-            $scope.z = measurements.z = e.accelerationIncludingGravity.z - calibration.z;
-            $scope.source = 'devicemotion';
+            $scope.$apply(function() {
+                $scope.x = measurements.x = e.accelerationIncludingGravity.x - calibration.x;
+                $scope.y = measurements.y = e.accelerationIncludingGravity.y - calibration.y;
+                $scope.z = measurements.z = e.accelerationIncludingGravity.z - calibration.z;
+                $scope.source = 'devicemotion';
+            });
         }, true);
 
         window.addEventListener('deviceorientation', function(e) {
-            $scope.x = measurements.alpha = e.alpha - calibration.alpha;
-            $scope.y = measurements.beta = e.beta - calibration.beta;
-            $scope.z = measurements.gamma = e.gamma - calibration.gamma;
-            $scope.source = 'deviceorientation';
+            $scope.$apply(function() {
+                $scope.x = measurements.alpha = e.alpha - calibration.alpha;
+                $scope.y = measurements.beta = e.beta - calibration.beta;
+                $scope.z = measurements.gamma = e.gamma - calibration.gamma;
+                $scope.source = 'deviceorientation';
+            });
         }, true);
     }
     setupListeners();
@@ -57,18 +63,26 @@ function MobileTouchesCtrl($scope) {
     $scope.touchend = [];
 
     window.addEventListener('touchstart', function(event) {
-        $scope.touchstart = event.touches;
+        $scope.$apply(function() {
+            $scope.touchstart = event.touches;
+        });
     });
 
     window.addEventListener('touchstart', function(event) {
-        $scope.touchstart = event.touches;
+        $scope.$apply(function() {
+            $scope.touchstart = event.touches;
+        });
     });
 
     window.addEventListener('touchmove', function(event) {
-        $scope.touchmove = event.touches;
+        $scope.$apply(function() {
+            $scope.touchmove = event.touches;
+        });
     });
 
     window.addEventListener('touchend', function(event) {
-        $scope.touchend = event.touches;
+        $scope.$apply(function() {
+            $scope.touchend = event.touches;
+        });
     });
 }
