@@ -188,11 +188,11 @@
         $update: ['$entity', function($entity) {
             var component = $entity.ngEnableMotorOnAccelerometer;
             if (component.xAxis) {
-                this.enableMotorIsInInterval($entity, this._acceleration.x, $entity.edge, component.invert);
+                this.enableMotorIsInInterval($entity, this._acceleration.x, $entity.ngEnableMotorOnAccelerometer.edge, component.invert);
             } else if (component.yAxis) {
-                this.enableMotorIsInInterval($entity, this._acceleration.y, $entity.edge, component.invert);
+                this.enableMotorIsInInterval($entity, this._acceleration.y, $entity.ngEnableMotorOnAccelerometer.edge, component.invert);
             } else if (component.zAxis) {
-                this.enableMotorIsInInterval($entity, this._acceleration.z, $entity.edge, component.invert);
+                this.enableMotorIsInInterval($entity, this._acceleration.z, $entity.ngEnableMotorOnAccelerometer.edge, component.invert);
             }
         }]
     });
