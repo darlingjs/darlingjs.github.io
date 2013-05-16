@@ -5,6 +5,9 @@ function MobileGyroCtrl($scope) {
     $scope.x = 0.0;
     $scope.y = 0.0;
     $scope.z = 0.0;
+    $scope.alpha = 0.0;
+    $scope.beta = 0.0;
+    $scope.gamma = 0.0;
     $scope.source = '';
 
     var measurements = {
@@ -47,9 +50,9 @@ function MobileGyroCtrl($scope) {
 
         window.addEventListener('deviceorientation', function(e) {
             $scope.$apply(function() {
-                $scope.x = measurements.alpha = e.alpha - calibration.alpha;
-                $scope.y = measurements.beta = e.beta - calibration.beta;
-                $scope.z = measurements.gamma = e.gamma - calibration.gamma;
+                $scope.alpha = measurements.alpha = e.alpha - calibration.alpha;
+                $scope.beta = measurements.beta = e.beta - calibration.beta;
+                $scope.gamma = measurements.gamma = e.gamma - calibration.gamma;
                 $scope.source = 'deviceorientation';
             });
         }, true);
