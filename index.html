@@ -187,9 +187,13 @@
 
       window.onerror = function(msg, url, line) {
           var preventErrorAlert = true;
-          ga('_trackEvent', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line, 0, true);
+          ga('send', 'event', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line, 0, true);
           return preventErrorAlert;
       };
+
+      FB.Event.subscribe('edge.create', function(targetUrl) {
+        ga('send', 'facebook', 'like', targetUrl);
+      });
     </script>
 
     <!--Social Code -->
