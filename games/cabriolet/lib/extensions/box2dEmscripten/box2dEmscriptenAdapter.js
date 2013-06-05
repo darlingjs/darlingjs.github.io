@@ -1,6 +1,4 @@
 /**
-/**
-/**
  * Project: darlingjs / GameEngine.
  *
  * Adapter for emscripten port of Box2D 2.2.1 to javascript
@@ -943,18 +941,40 @@
         $require: ['ngEnableMotor', 'ngAnyJoint'],
 
         $addEntity: function($entity) {
-            var joint = $entity.ngAnyJoint.joint;
+            var ngAnyJoint = $entity.ngAnyJoint;
+            var joint = ngAnyJoint.joint;
 
             if (joint) {
                 joint.EnableMotor(true);
             }
+
+            if (ngAnyJoint.onEnabledReverse && $entity.ngEnableMotorReverse) {
+                $entity.$applyModifier(ngAnyJoint.onEnabledReverse);
+            } else if (ngAnyJoint.onEnabled) {
+                $entity.$applyModifier(ngAnyJoint.onEnabled);
+            }
+
+            if (ngAnyJoint.onDisabled) {
+                $entity.$revertModifier(ngAnyJoint.onDisabled);
+            }
         },
 
         $removeEntity: function($entity) {
-            var joint = $entity.ngAnyJoint.joint;
+            var ngAnyJoint = $entity.ngAnyJoint;
+            var joint = ngAnyJoint.joint;
 
             if (joint) {
                 joint.EnableMotor(false);
+            }
+
+            if (ngAnyJoint.onEnabledReverse && $entity.ngEnableMotorReverse) {
+                $entity.$revertModifier(ngAnyJoint.onEnabledReverse);
+            } else if (ngAnyJoint.onEnabled) {
+                $entity.$revertModifier(ngAnyJoint.onEnabled);
+            }
+
+            if (ngAnyJoint.onDisabled) {
+                $entity.$applyModifier(ngAnyJoint.onDisabled);
             }
         }
     });
@@ -1452,7 +1472,13 @@
         var component = entityA[componentName];
 
         if (!component) {
+            if (darlingutil.isFunction(config)) {
+                config = config.call(entityA);
+            }
             config = config || {};
+            if (config === true) {
+                config = {};
+            }
             config.entities = [entityB];
             entityA.$add(componentName, config);
         } else {

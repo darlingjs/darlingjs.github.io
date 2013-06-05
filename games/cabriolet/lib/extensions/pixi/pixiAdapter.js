@@ -92,18 +92,20 @@
     m.$s('ngPixijsSpriteFactory', {
         $require: ['ngSprite'],
 
-        $addEntity: ['ngPixijsStage', 'ngPixijsStaticZ', '$entity', function(ngPixijsStage, ngPixijsStaticZ, $entity) {
+        $addEntity: ['ngPixijsStage', 'ngPixijsStaticZ', '$entity', 'ngResourceLoader', function(ngPixijsStage, ngPixijsStaticZ, $entity, ngResourceLoader) {
             var state = $entity.ngSprite;
             if (state.spriteSheetUrl) {
                 if (isLoaded(state.spriteSheetUrl)) {
                     handler();
                 } else {
+                    ngResourceLoader.startLoading(state.spriteSheetUrl);
                     loadAtlas(state.spriteSheetUrl)
                         .then(handler);
                 }
             }
 
             function handler() {
+                ngResourceLoader.stopLoading(state.spriteSheetUrl);
                 buildSprite(state, $entity.ng2DSize);
                 fitToSize(state, $entity.ng2DSize);
                 //hide sprite before update phase
@@ -381,6 +383,27 @@
             //$entities.forEach(this.$updateNode);
             // render the stage
             this._renderer.render(this._stage);
+        }
+    });
+
+    /**
+     * Resources of Pixi.js
+     * Every Asset or image that need to bee tracked by
+     * ngResourceLoader. Can by loaded though
+     *
+     * ngPixijsResources.load(url)
+     *
+     * It's good practice to preload all images and assets
+     * before game is started. To avoid lack of them
+     * in first seconds of game.
+     */
+    m.$s('ngPixijsResources', {
+        load: function(url, ngResourceLoader) {
+            ngResourceLoader.startLoading(url);
+            loadAtlas(url)
+                .then(function() {
+                    ngResourceLoader.stopLoading(url);
+                });
         }
     });
 

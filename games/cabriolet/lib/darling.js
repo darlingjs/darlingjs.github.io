@@ -1,5 +1,5 @@
 /**
- * @license darlingjs v0.0.6 2013-05-10 by Eugene Krevenets.
+ * @license darlingjs v0.0.6 2013-06-05 by Eugene Krevenets.
  * Component & Entity based javascript game engine. Decoupled from any visualization, physics, and so on. With injections and modules based on AngularJS.
  * http://darlingjs.github.io/
  *
@@ -414,13 +414,7 @@ function isTypeOf(o, t) {
  *     provided, must be of the same type as `source`.
  * @returns {*} The copy or updated `destination`, if `destination` was specified.
  */
-function copy(source, destination, deleteAllDestinationProperties, depth){
-    if (++depth > 10) {
-        throw new Error('!');
-    }
-    if (!depth) {
-        depth = 0;
-    }
+function copy(source, destination, deleteAllDestinationProperties){
     if (isWindow(source)) {
         throw new Error("Can't copy Window");
     }
@@ -428,11 +422,11 @@ function copy(source, destination, deleteAllDestinationProperties, depth){
         destination = source;
         if (source) {
             if (isArray(source)) {
-                destination = copy(source, [], false, depth);
+                destination = copy(source, []);
             } else if (isDate(source)) {
                 destination = new Date(source.getTime());
             } else if (isObject(source)) {
-                destination = copy(source, {}, false, depth);
+                destination = copy(source, {});
             }
         }
     } else {
@@ -442,7 +436,7 @@ function copy(source, destination, deleteAllDestinationProperties, depth){
         if (isArray(source)) {
             destination.length = 0;
             for ( var i = 0; i < source.length; i++) {
-                destination.push(copy(source[i], null, false, depth));
+                destination.push(copy(source[i]));
             }
         } else {
             if (deleteAllDestinationProperties) {
@@ -452,7 +446,7 @@ function copy(source, destination, deleteAllDestinationProperties, depth){
             }
             for ( var key in source) {
                 if (source.hasOwnProperty(key)) {
-                    destination[key] = copy(source[key], null, false, depth);
+                    destination[key] = copy(source[key]);
                 }
             }
         }
@@ -1257,8 +1251,10 @@ darlingjs.removeAllWorlds = function() {
  * @constructor
  */
 var Entity = function() {
-    mixin(this, Events);
+
 };
+
+mixin(Entity.prototype, Events);
 
 /**
  * Name of entity
@@ -1344,17 +1340,18 @@ Entity.prototype.$remove = function(value) {
         return;
     }
 
+    this.trigger('remove', this, instance);
+
     //nullity optimization
     //delete this[name];
     this[name] = null;
-
-    this.trigger('remove', this, instance);
 
     return instance;
 };
 
 /**
  * Is entity has component
+ *
  * @param {string|Component} value The name or instance of component test
  * @return {boolean}
  */
@@ -1363,6 +1360,88 @@ Entity.prototype.$has = function(value) {
         return !!this[value];
     } else {
         return !!this[value.$name];
+    }
+};
+
+
+
+/**
+ * Apply modifier to $entity
+ *
+ * modifier can be:
+ * 1. callback function (execute),
+ * result is defined will be apply as modifier;
+ * 2. name of component (add);
+ * 3. object with key - components, value - is config of components (add);
+ * any value can be callback that will be executed
+ * and result will be used as config fo component;
+ * 4. array of components (add);
+ *
+ * @param modifier
+ */
+Entity.prototype.$applyModifier = function(modifier) {
+    if (darlingutil.isFunction(modifier)) {
+        modifier = modifier.call(this);
+        if (darlingutil.isDefined(modifier)) {
+            this.$applyModifier(modifier);
+        }
+    } else {
+        //TODO : add components from ngAnyJoint.onEnableReverse
+        if (darlingutil.isString(modifier)) {
+            this.$add(modifier);
+        } else if (darlingutil.isArray(modifier)) {
+            for(var i = 0, count = modifier.length; i < count; i++) {
+                var componentName = modifier[i];
+                if (darlingutil.isFunction(componentName)) {
+                    componentName = componentName.call(this);
+                }
+                this.$add(componentName);
+            }
+        } else if (darlingutil.isObject(modifier)) {
+            for(var key in modifier) {
+                var config = modifier[key];
+                if (darlingutil.isFunction(config)) {
+                    config = config.call(this);
+                }
+                this.$add(key, config)
+            }
+        } else {
+            throw new Error('Unknown modifier')
+        }
+    }
+};
+
+/**
+ * Revert modifier to $entity
+ *
+ * modifier can be:
+ * 1. callback function (can't be reverted);
+ * 2. name of component (remove);
+ * 3. object with key - components, value - is config of components (remove);
+ * 4. array of components (remove);
+ *
+ * @param handler
+ */
+Entity.prototype.$revertModifier = function(modifier) {
+    if (!darlingutil.isFunction(modifier)) {
+        //TODO : remove components from ngAnyJoint.onEnableReverse
+        if (darlingutil.isString(modifier)) {
+            this.$remove(modifier);
+        } else if (darlingutil.isArray(modifier)) {
+            for(var i = 0, count = modifier.length; i < count; i++) {
+                var componentName = modifier[i];
+                if (darlingutil.isFunction(componentName)) {
+                    componentName = componentName.call(this);
+                }
+                this.$remove(componentName);
+            }
+        } else if (darlingutil.isObject(modifier)) {
+            for(var key in modifier) {
+                this.$remove(key)
+            }
+        } else {
+            throw new Error('Unknown modifier')
+        }
     }
 };
 
@@ -1467,10 +1546,11 @@ var List = function(name) {
     } else {
         this.PROPERTY_LINK_TO_NODE = '$$listNode_' + Math.random();
     }
-    mixin(this, Events);
 };
 
 darlingutil.List = List;
+
+mixin(List.prototype, Events);
 
 /**
  * Add instance to list
@@ -1877,6 +1957,8 @@ Module.prototype.$s = Module.prototype.$system = function(name, config) {
 var System = function () {
     this.$$init();
 };
+
+mixin(System.prototype, Events);
 
 /**
  * name of the System
@@ -2620,16 +2702,16 @@ World.prototype.$$onComponentAdd = function(entity, component) {
  * @param component
  */
 World.prototype.$$onComponentRemove = function(entity, component) {
-    if (!beforeMatch(entity, 'onComponentRemove', this, this.$$onComponentRemove, arguments)) {
-        return;
-    }
+//    if (!beforeMatch(entity, 'onComponentRemove', this, this.$$onComponentRemove, arguments)) {
+//        return;
+//    }
 
     for (var componentsString in this.$$families) {
         var family = this.$$families[componentsString];
         family.removeIfMatch(entity, component);
     }
 
-    afterMatch(entity, 'onComponentRemove');
+//    afterMatch(entity, 'onComponentRemove');
 };
 
 /**
