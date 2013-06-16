@@ -67,7 +67,7 @@ a:link {
 }
 
 a:hover {
-    color: #ff537b;
+    color: #ff7597;
 }
 
 a:visited {
@@ -76,4 +76,111 @@ a:visited {
 
 a:active {
     color: #ff537b;
+}
+
+.page {
+    float: left;
+}
+
+.page-content {
+    margin-top: -480px;
+    height: 480px;
+}
+
+.page-container {
+    /*position:relative;
+    width: 640px;*/
+}
+
+.page-enter, .page-leave, .page-enter-active, .page-leave-active {
+    position:relative;
+    margin-right: -100%;
+    float: left;
+}
+
+.page-enter, .page-leave {
+    -webkit-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+    -moz-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+    -o-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+    transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+}
+
+.page-enter {
+    left:100px;
+    opacity: 0;
+}
+
+.page-enter-active {
+    left: 0;
+    opacity: 1;
+}
+
+.page-leave {
+    left:0;
+    opacity: 1;
+}
+
+.page-leave-active {
+    left:-100px;
+    opacity: 0;
+}
+
+.footer {
+    clear: both;
+}
+
+.game-info {
+    position:relative;
+    float: left;
+    text-align: center;
+    margin-right: auto;
+    margin-left: auto;
+    width: 400px;
+}
+
+.game-info-enter, .game-info-leave, .game-info-enter-active, .game-info-leave-active {
+    position:relative;
+    margin-right: -300px;
+    float: left;
+}
+
+.game-info-enter, .game-info-leave {
+    -webkit-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+    -moz-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+    -o-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+    transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+}
+
+.game-info-enter {
+    position:relative;
+    top:-100px;
+    opacity: 0;
+}
+
+.game-info-enter-active {
+    position:relative;
+    top:0;
+    opacity: 1;
+}
+
+.game-info-leave {
+    position:relative;
+    top:0;
+    opacity: 1;
+}
+
+.game-info-leave-active {
+    position:relative;
+    top:100px;
+    opacity: 0;
+}
+
+.level-badge {
+    text-align: center;
+}
+
+.level-selector {
+    float: left;
+    list-style: none;
+    width: 80px;
 }

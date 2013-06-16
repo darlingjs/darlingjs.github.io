@@ -130,6 +130,7 @@
                 bodyDef.set_position(vec);
                 bodyDef.set_angle(rotation);
                 bodyDef.set_fixedRotation(ngPhysic.fixedRotation);
+                bodyDef.set_angularDamping(ngPhysic.angularDamping);
                 body = this._world.CreateBody(bodyDef);
                 vec.onDispose();
 
@@ -189,7 +190,9 @@
                     if (this._world.IsLocked()) {
                         this._arrayOfFixtureToRemoveAfterUnlock.push(fixture);
                     } else {
-                        body.DestroyFixture(fixture);
+                        if (body.m_userData != null) {
+                            body.DestroyFixture(fixture);
+                        }
 
                         $entity.ngPhysic._b2dFixture = null;
                         $entity.ngPhysic._b2dBody = null;
@@ -1455,10 +1458,14 @@
      * @param entityB
      */
     function addContactComponent(rule, entityA, entityB) {
-        if (darlingutil.isString(rule.andGet)) {
-            addOneByOneContactComponent(rule.andGet, null, entityA, entityB);
-        } else if(darlingutil.isObject(rule.andGet)) {
-            var components = rule.andGet;
+        var result = rule.andGet;
+        if (darlingutil.isFunction(result)) {
+            result = result.call(entityA);
+        }
+        if (darlingutil.isString(result)) {
+            addOneByOneContactComponent(result, null, entityA, entityB);
+        } else if(darlingutil.isObject(result)) {
+            var components = result;
             for(var key in components) {
                 if (components.hasOwnProperty(key)) {
                     addOneByOneContactComponent(key, components[key], entityA, entityB);
@@ -1664,6 +1671,23 @@
             var vec = getb2Vec2(dx, dy);
             body.SetLinearVelocity(vec);
             vec.onDispose();
+        }]
+    });
+
+    /**
+     * Marker of bind entity.ngPhysic.angularDamping to physics parameters
+     */
+    m.$c('ngBindAngularDampingToPhysics');
+
+    /**
+     * System that bind entity.ngPhysic.angularDamping to physics parameters
+     */
+    m.$s('ngBindAngularDampingToPhysics', {
+        $require: ['ngBindAngularDampingToPhysics', 'ngPhysic'],
+
+        $update: ['$entity', function($entity) {
+            var body = $entity.ngPhysic._b2dBody;
+            body.SetAngularDamping($entity.ngPhysic.angularDamping);
         }]
     });
 

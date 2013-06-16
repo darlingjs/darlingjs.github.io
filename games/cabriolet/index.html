@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="RedCabrioletGame">
 <head>
     <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
     <link href="css/main.css" rel="stylesheet" type="text/css">
@@ -7,21 +7,21 @@
     <title>Red Cabriolet</title>
 </head>
 <body>
-    <div class="center desktop">
-        <h1>Red Cabriolet (in progress)</h1>
+    <header ng-controller="HeaderCtrl">
+      <div class="center desktop">
+        <h1>Red Cabriolet v{{version}}</h1>
         <div class="add-a-little-space-up-and-down">
-          <small>Powered by <a href="http://darlingjs.github.io/">darlingJS</a> Game Engine</small>
+          <small>Powered by <a href="http://darlingjs.github.io/" target="_blank">darlingJS</a> Game Engine</small>
         </div>
-        <!--<iframe src="http://ghbtns.com/github-btn.html?user=darlingjs&repo=darlingjs&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>-->
-    </div>
-    <!-- <div id="gameView" class="center" style="height: 480px; width: 640px; position:relative;"></div> -->
-    <div id="gameView" class="center">
-      <div style="position: absolute;top: 0px;">
-        <canvas id="gameCanvas"/>
       </div>
+    </header>
+    <nav></nav>
+    <div class="center">
+      <article class="page-container" ng-view ng-animate="'page'">
+      </article>
     </div>
-    <button onclick="soundSwitch()">sound on/off</button>
-    <div id="loading"></div>
+    <footer class="center desktop footer">
+    </footer>
 
     <!-- Social buttons -->
     <div class="center add-a-little-space-up-and-down desktop">
@@ -48,7 +48,7 @@
     </script>
 
     <!--CDN-->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
 
     <script src="http://darlingjs.github.io/lib/darling.0.0.7.js"></script>
 
@@ -75,7 +75,7 @@
 
     <script src="lib/extensions/particles/particleSystem.js"></script>
 
-    <script src="vendor/howler/howler.min.js"></script>
+    <script src="vendor/howler/howler.js"></script>
     <script src="lib/extensions/sound/sound.js"></script>
     <script src="lib/extensions/sound/howlerAdapter.js"></script>
 
@@ -84,8 +84,13 @@
 
     <script src="vendor/q/q.js"></script>
 
+    <script src="components/angular/localStorageModule.js"></script>
+
     <script src="js/common.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/player.js"></script>
 
     <!--Social Code -->
 

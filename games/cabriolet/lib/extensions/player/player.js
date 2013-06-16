@@ -51,11 +51,14 @@
 
             //FIX ME: can only remove in timeout
             setTimeout(function() {
-                var entities = bonusState.entities;
+                var entities = bonusState.entities.slice();
                 for (var i = 0, count = entities.length; i < count; i++) {
                     var entity = entities[i];
                     $world.$remove(entity);
                     $entity.ngScores.score += entity.ngBonus.score;
+                    if ($entity.ngScores.handler) {
+                        $entity.ngScores.handler.call($entity, $entity.ngScores.score);
+                    }
                 }
             }, 0);
         }]

@@ -56,6 +56,15 @@
             }
         }],
 
+        $removed: ['ngPixijsStage', function(ngPixijsStage) {
+            if (ngPixijsStage._stage) {
+                for (var layerName in this._layers) {
+                    ngPixijsStage._stage.removeChild(this._layers[layerName]);
+                }
+            }
+            this._layers = {};
+        }],
+
         $addEntity: ['$entity', function($entity) {
             this.addChildAt($entity.ngLayer.layerName, $entity.ngPixijsSprite.sprite);
         }],
@@ -98,14 +107,18 @@
                 if (isLoaded(state.spriteSheetUrl)) {
                     handler();
                 } else {
-                    ngResourceLoader.startLoading(state.spriteSheetUrl);
+                    if (ngResourceLoader) {
+                        ngResourceLoader.startLoading(state.spriteSheetUrl);
+                    }
                     loadAtlas(state.spriteSheetUrl)
                         .then(handler);
                 }
             }
 
             function handler() {
-                ngResourceLoader.stopLoading(state.spriteSheetUrl);
+                if (ngResourceLoader) {
+                    ngResourceLoader.stopLoading(state.spriteSheetUrl);
+                }
                 buildSprite(state, $entity.ng2DSize);
                 fitToSize(state, $entity.ng2DSize);
                 //hide sprite before update phase
@@ -269,33 +282,62 @@
     });
 
     m.$s('ngPixijsStage', {
-        //$require: ['ng2D', 'ngPixijsSprite'],
-
-        width_to_height: 0,
         width: 640,
         height: 480,
 
-        shiftX: 0.0,
-        shiftY: 0.0,
-
         fitToWindow: false,
-        _onResizeDefaultHandler: null,
 
         domId: '',
 
+        /**
+         * user webGL to renderer scene
+         */
         useWebGL: true,
 
+        /**
+         * @private
+         */
+        _onResizeDefaultHandler: null,
+        _canvasWasCreated: false,
         _canvas: null,
         _stage: null,
         _center: {x:0.0, y:0.0},
+
+        _visible: false,
 
         $added: function() {
             // create an new instance of a pixi stage
             this._stage = new PIXI.Stage(0x0);
 
+            this.show();
+        },
+
+        $removed: function() {
+            this._stage = null;
+            this.hide();
+            clearLoaders();
+
+            //clear all cache in Pixi.js
+            PIXI._batchs.length = 0;
+            PIXI.TextureCache = {};
+            PIXI.BaseTextureCache = {};
+            PIXI.shaderProgram = null;
+        },
+
+        /**
+         * Show pixi.js stage
+         */
+        show: function() {
+            if (this._visible) {
+                return;
+            }
+
+            this._visible = true;
+
             // create a renderer instance.
             var width, height;
             var view;
+
             if (this.domId !== null && this.domId !== '') {
                 view = darlingutil.getCanvas(this.domId);
                 if (view) {
@@ -303,6 +345,7 @@
                     view.height = this.height;
                 } else {
                     view = darlingutil.placeCanvasInStack(this.domId, this.width, this.height);
+                    this._canvasWasCreated = true;
                 }
                 this._canvas = view;
                 width = view.width;
@@ -312,15 +355,18 @@
                 height = this.height;
             }
 
-            this.width_to_height = this.width / this.height;
-
             this._center.x = 0.5 * this.width;
             this._center.y = 0.5 * this.height;
 
-            if (this.useWebGL) {
-                this._renderer = PIXI.autoDetectRenderer(width, height, view);
+            if (this._renderer) {
+                this._renderer.view = view;
+                this._renderer.handleContextRestored();
             } else {
-                this._renderer = new PIXI.CanvasRenderer(width, height, view);
+                if (this.useWebGL) {
+                    this._renderer = PIXI.autoDetectRenderer(width, height, view);
+                } else {
+                    this._renderer = new PIXI.CanvasRenderer(width, height, view);
+                }
             }
 
             // add the renderer view element to the DOM
@@ -332,13 +378,13 @@
                 this._onResizeDefaultHandler = window.onresize || function(){};
                 var self = this;
                 window.onresize = function(e) {
-                    self._onReize(e);
+                    self._onResize(e);
                 };
-                self._onReize();
+                self._onResize();
             }
         },
 
-        _onReize: function(e) {
+        _onResize: function(e) {
             this._onResizeDefaultHandler(e);
 
             var widthRatio = window.innerWidth / this.width;
@@ -352,12 +398,26 @@
             this._center.x = 0.5 * ratio * this.width;
             this._center.y = 0.5 * ratio * this.height;
             this._canvas.width = ratio * this.width;
-            this._canvas.height = ratio * height;
+            this._canvas.height = ratio * this.height;
         },
 
-        $removed: function() {
-            document.removeChild(this._canvas);
+        /**
+         * hide pixi.js stage
+         */
+        hide: function() {
+            if (!this._visible) {
+                return;
+            }
+            this._visible = false;
+            if (this._canvasWasCreated) {
+                document.removeChild(this._canvas);
+            }
+            window.onresize = this._onResizeDefaultHandler;
+            this._onResizeDefaultHandler = null;
             this._canvas = null;
+            this._renderer = null;
+            this._stage = null;
+            PIXI.gl = null;
         },
 
         addChild: function(child) {
@@ -379,6 +439,9 @@
             }
         },
 
+        /**
+         * apply renderer
+         */
         $afterUpdate: function() {
             //$entities.forEach(this.$updateNode);
             // render the stage
@@ -407,6 +470,11 @@
         }
     });
 
+    function clearLoaders() {
+        _loaders.length = 0;
+        _loadersPromises = {};
+        _loaded = {}
+    }
 
     var _loaders = [];
     var _loadersPromises = {};

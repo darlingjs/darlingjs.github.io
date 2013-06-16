@@ -13,6 +13,7 @@
         restitution: 0.5,
         friction: 0.75,
         density: 1.0,
+        angularDamping: 0.0,
         fixedRotation: false
     });
 
@@ -93,11 +94,14 @@
         $require: ['ngEnableMotorOnKeyDown', 'ngSelected'],
 
         $addEntity: function($entity) {
-            var keyCode = $entity.ngEnableMotorOnKeyDown.keyCode;
-            var keyCodeReverse = $entity.ngEnableMotorOnKeyDown.keyCodeReverse;
+            var component = $entity.ngEnableMotorOnKeyDown;
+
+            var keyCode = component.keyCode;
+            var keyCodeReverse = component.keyCodeReverse;
 
             this._target = document.getElementById(this.domId) || document;
-            this._target.addEventListener('keydown', function(e) {
+
+            function onKeyDown(e) {
                 var index;
                 index = keyCode.indexOf(e.keyCode);
                 if (index >= 0) {
@@ -115,8 +119,9 @@
                         }
                     }
                 }
-            });
-            this._target.addEventListener('keyup', function(e) {
+            }
+
+            function onKeyUp(e) {
                 var index = keyCode.indexOf(e.keyCode);
                 if (index >= 0) {
                     $entity.$remove('ngEnableMotor');
@@ -127,7 +132,18 @@
                         $entity.$remove('ngEnableMotor');
                     }
                 }
-            });
+            }
+            component.$$onKeyDown = onKeyDown;
+            component.$$onKeyUp = onKeyUp;
+
+            this._target.addEventListener('keydown', onKeyDown);
+            this._target.addEventListener('keyup', onKeyUp);
+        },
+
+        $removeEntity: function($entity) {
+            var component = $entity.ngEnableMotorOnKeyDown;
+            this._target.removeEventListener('keydown', component.$$onKeyDown);
+            this._target.removeEventListener('keyup', component.$$onKeyUp);
         }
     });
 

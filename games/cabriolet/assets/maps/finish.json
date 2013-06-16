@@ -40,9 +40,23 @@
                     },
                  "type":"",
                  "visible":true,
-                 "width":208,
+                 "width":256,
                  "x":496,
                  "y":184
+                }, 
+                {
+                 "ellipse":true,
+                 "height":216,
+                 "name":"rock-drums",
+                 "properties":
+                    {
+                     "ngSound":"{\n\"urls\": [\"assets\/sfx\/rock-drums-120-0.ogg\", \"assets\/sfx\/rock-drums-120-0.mp3\"],\n\"volume\": 1.0,\n\"loop\": true\n}"
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":208,
+                 "x":272,
+                 "y":216
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -69,15 +83,16 @@
                  "y":96
                 }, 
                 {
-                 "height":104,
+                 "height":144,
                  "name":"",
                  "properties":
                     {
+                     "ground":"",
                      "ngSprite":"{\"name\":\"purple-pixel.jpg\", \"spriteSheetUrl\":\"assets\/spritesheet.json\", \"layerName\": \"road-1\", \"tiled\": true}"
                     },
                  "type":"static",
                  "visible":true,
-                 "width":1032,
+                 "width":1040,
                  "x":-8,
                  "y":440
                 }, 
