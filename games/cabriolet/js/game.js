@@ -7,6 +7,7 @@ game.controller('GameCtrl', ['GameWorld', 'Levels', 'Player', '$scope', '$routeP
     function(GameWorld, Levels, Player, $scope, $routeParams, $location) {
 
     'use strict';
+    var bonusForLevelFinish = 1000;
 
     $scope.life = 1;
     $scope.score = 0;
@@ -24,6 +25,15 @@ game.controller('GameCtrl', ['GameWorld', 'Levels', 'Player', '$scope', '$routeP
     $scope.levelId = levelId;
     GameWorld.selectLevel(levelId);
     $scope.urlToReplay = levelId + Math.random();
+
+    //adapt to 'gameView' element size
+    var gameView = document.getElementById('gameView');
+    if (gameView.clientWidth < 600) {
+        GameWorld.setStageSize(400, 300);
+    } else {
+        GameWorld.setStageSize(640, 480);
+    }
+
 
     if (GameWorld.isLoaded()) {
         $scope.loadProgress = 0.0;
@@ -80,7 +90,8 @@ game.controller('GameCtrl', ['GameWorld', 'Levels', 'Player', '$scope', '$routeP
     }
 
     $scope.$on('world/finish', function() {
-        Player.finishLevel(levelId, $scope.score + 1000);
+        $scope.score+=bonusForLevelFinish;
+        Player.finishLevel(levelId, $scope.score);
         GameWorld.stopVehicle();
 
         var currentLevel = Levels.getLevelAt(levelId);
@@ -125,8 +136,8 @@ game.factory('GameWorld', ['$rootScope', function($rootScope) {
     'use strict';
 
     var world,
-        width = 640,
-        height = 480,
+        width,
+        height,
         debugDraw = false,
         renderWithPixiJs = true,
         levelId,
@@ -431,6 +442,11 @@ game.factory('GameWorld', ['$rootScope', function($rootScope) {
      * @type {boolean}
      */
     var isBuilded = false;
+
+    function setStageSize(newWidth, newHeight) {
+        width = newWidth;
+        height = newHeight;
+    }
 
     /**
      *
@@ -2249,6 +2265,8 @@ game.factory('GameWorld', ['$rootScope', function($rootScope) {
 
         isMute: isMute,
         unMute: unMute,
-        mute: mute
+        mute: mute,
+
+        setStageSize: setStageSize
     };
 }]);
