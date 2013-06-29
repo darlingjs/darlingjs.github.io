@@ -11,8 +11,11 @@
       <li>window.screen.Width x Height: {{window.screen.width}} x {{window.screen.height}}</li>
       <li>landscape: {{landscape}}</li>
       <li>support webgl: {{webgl}}</li>
-      <li>touch: {{touch.pageX}} x {{touch.pageY}}</li>
       <li>mouse: {{mouse.screenX}} x {{mouse.screenY}}</li>
+    </ul>
+    <p>touches {{touches.length}}</p>
+    <ul>
+      <li ng-repeat="touch in touches">{{touch.pageX}} x {{touch.pageY}}</li>
     </ul>
   </div>
 </div>

@@ -29,12 +29,26 @@
                 });
             });
 
+            document.addEventListener("touchstart", handleStart, false);
+
+            function handleStart(event) {
+                $scope.$apply(function() {
+                    $scope.touches = event.touches;
+                });
+            }
+
+            document.addEventListener("touchend", handleEnd, false);
+
+            function handleEnd(event) {
+                /*$scope.$apply(function() {
+                    $scope.touches = event.touches;
+                });*/
+            }
+
             document.addEventListener('touchmove', function(event) {
-                if (event.touches && event.touches.length > 0) {
-                    $scope.$apply(function() {
-                        $scope.touch = event.touches[0];
-                    });
-                }
+                $scope.$apply(function() {
+                    $scope.touches = event.touches;
+                });
             });
         }
     ]);
