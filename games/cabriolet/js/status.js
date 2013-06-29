@@ -30,11 +30,6 @@
             });
 
             document.addEventListener('touchmove', function(event) {
-                if (event.targetTouches && event.targetTouches.length > 0) {
-                    $scope.$apply(function() {
-                        $scope.touch = event.targetTouches[0];
-                    });
-                }
                 if (event.touches && event.touches.length > 0) {
                     $scope.$apply(function() {
                         $scope.touch = event.touches[0];
