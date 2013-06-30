@@ -1,0 +1,53 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Calibri;
+}
+
+.header-list {
+    list-style: none;
+    padding-left: 8px;
+}
+
+.header-list-item {
+    display: inline;
+    list-style-type: none;
+    padding-right: 16px;
+}
+
+.banner {
+    width: 400px;
+    margin: 16px auto;
+}
+
+.download-btn {
+    width: 200px;
+    height: 32px;
+    background-color: #006400;
+    border-radius: 8px;
+}
+
+.download-title {
+    text-align: center;
+    margin: 4px auto;
+}
+
+.copy-right {
+    text-align: center;
+    font-size: small;
+}
+
+.features-list{
+    list-style-type: none;
+    padding: 8px;
+}
+
+.feature-title {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.demo-title {
+    font-size: larger;
+    font-weight: bold;
+}

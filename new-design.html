@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Darling.JS / html5 entity based game engine</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="css/main.css">
+</head>
+<body>
+  <a href="https://github.com/darlingjs/darlingjs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+  <header style="background-color: #F0F0F0;width: 100%;">
+    <ul class="header-list">
+      <li class="header-list-item"><a href="https://github.com/darlingjs/darlingjs/wiki/Quick-Start">Quick Start</a></li>
+      <li class="header-list-item"><a href="http://darlingjs.github.io/docs/">Documentation</a></li>
+      <li class="header-list-item"><a href="https://pressanykeytocreate.blogspot.com">Blog</a></li>
+      <li class="header-list-item"><a href="https://github.com/darlingjs/darlingjs-examples">Examples</a></li>
+      <li class="header-list-item">Donate</li>
+    </ul></header>
+
+  <article class="banner-section" style="background-color: #E0E0E0;">
+    <div class="banner" >
+      <img src="images/logo-oldschool.png" width="400" height="230"/>
+    </div>
+    <p class="engine-moto">Darling.js - Entity-Component-System based javascript game engine with dependency injections and modules. Create games flexible.</p>
+    <iframe src="http://ghbtns.com/github-btn.html?user=darlingjs&repo=darlingjs&type=watch&count=true&size=large"
+            allowtransparency="true" frameborder="0" scrolling="0" width="170" height="30"></iframe>
+    <div>
+        <a href="http://darlingjs.github.io/lib/darling.0.0.7.js">Download (v.7)</a> <a href="http://darlingjs.github.io/lib/darling.0.0.7.min.js">min</a>
+    </div>
+  </article>
+
+  <article id="social">
+    <h1>Social</h1>
+    <div>
+      <img src="https://lh5.googleusercontent.com/-eU74tsCK1Bc/UdCaa9yhPYI/AAAAAAAAe8g/yKnSZhn-uEU/s0/2013-06-30_22-51-53.png"/>
+    </div>
+  </article>
+
+  <article id="demos" style="background-color: #C0C0C0;">
+    <h1>Demos</h1>
+    <ul>
+      <li>
+        <span class="demo-title"><a href="http://darlingjs.github.io/games/cabriolet/">Red Cabriolet with <a href="https://github.com/darlingjs/darlingjs-examples/tree/master/04-box2d-simulation-of-vehicle">sources</a></a></span>
+        <br/>
+        <a href="http://darlingjs.github.io/games/cabriolet/"><img width="640" height="480"  src="https://lh4.googleusercontent.com/--BwdjZS5wZk/UXLxxVdcZuI/AAAAAAAAaac/ktkB6nzgF3I/s0/2013-04-20_21-31-27.png"/></a>
+        <p>
+          Arcade game combined <a href="http://en.wikipedia.org/wiki/Elasto_Mania">Elasto Mania</a> and <a href="http://en.wikipedia.org/wiki/Dino_Run">Dino Run</a>.
+        </p>
+        <p>Game goal is drive the cabriolet and try to avoid storm, collect gems and reach to the end point.</p>
+        <p>Used modules: Emscripten Box2d, Pixi.js, Howler.js and so on.</p>
+        <p>Also was used <a href="http://angularjs.org/">Angular.js</a> for creating game like single page app.</p>
+      </li>
+    </ul>
+  </article>
+
+  <article id="features" style="background-color: #D0D0D0;">
+    <h1>Features</h1>
+    <ul class="features-list">
+      <li>
+        <span class="feature-title">Free & Open Source</span>
+        <p>Darling.js does not cost a dime. Code licensed under the <a href="https://github.com/darlingjs/darlingjs/blob/master/LICENSE.md">Simplified BSD License</a>. You only need to noted in source that you have used darling.js. And I'll be very pleasured if you let me know that you are using engine in your project.</p>
+      </li>
+      <li>
+        <span class="feature-title">Injections</span>
+        <p>The dependency injection in Darling.js allow you to declarative
+          describe how your application is wired. And any component
+          which doesn't fit your needs can easily be replaced. Heavily inspired by <a href="http://angularjs.org/">Angular.js</a></p>
+      </li>
+      <li>
+        <span class="feature-title">Modular</span>
+        <p>Separates the functionality and data into individual Systems and
+          Components that are mostly independent of one another.
+          So composition is used instead of inheritance. Also group
+          components and system in Modules that can be plugged to game application. <a href="https://github.com/darlingjs/darlingjs/wiki/What-is-the-Entity-Component-System%3F">more</a></p>
+      </li>
+      <li>
+        <span class="feature-title">Super-light</span>
+        <p>Engine doesn't depend on any additional library
+          and only implement <a href="http://en.wikipedia.org/wiki/Entity_component_system">Entity, Component, System</a> approach.
+          So it's up to you to use any renderer libraries (2D or 3D), physic simulation
+          and AI. But for easy integration there is exist <a href="#modules">some adapter for popular libraries and common use cases</a>.
+        </p>
+      </li>
+    </ul>
+  </article>
+
+  <article id="modules" style="background-color: #B0B0B0;">
+    <h1>Modules</h1>
+    <ul class="modules-list">
+      <ul>
+        <li><a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/box2dEmscripten"><span class="module-title">Emscripten Box2d Adapter</span></a> - Physics simulation</li>
+        <li><a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/pixi"><span class="module-title">Pixi.js Adapter</span></a> - Renderer Engine (WebGL, Canvas 2D)</li>
+        <li><a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/sound"><span class="module-title">Howler.js Adapter</span></a> - Web Sound (support org, mp3)</li>
+        <li><a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/loader"><span class="module-title">Asset Loader</span></a> - To control loading of sprites and sounds</li>
+        <li><a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/space"><span class="module-title">2D and 3D</span></a> - Parallax effect, cycling backgrounds and other</li>
+        <li><a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/stats"><span class="module-title">Stats.js Adapter</span></a> - To monitor game performance</li>
+      </ul>
+      <a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/">and so on</a>
+    </ul>
+  </article>
+
+  <article id="quick-start" style="background-color: #A0A0A0;">
+    <h1>Quick Start</h1>
+    <p>
+      Comming soon
+    </p>
+    <a href="https://github.com/darlingjs/darlingjs/wiki/Quick-Start">Article</a>.
+    <a href="https://github.com/darlingjs/darlingjs-examples">Examples - sources</a>
+  </article>
+
+  <article id="feed" style="background-color: #909090;">
+    <h1>Feed</h1>
+    <ul>
+      <li><a href="https://plus.google.com/communities/100075954096144611101">G+ Community</a></li>
+      <li><a href="https://www.facebook.com/Darlingjs">Facebook Page</a></li>
+      <li><a href="https://twitter.com/Hyzhak_en">Twitter</a></li>
+      <li><a href="https://pressanykeytocreate.blogspot.com">Blog</a></li>
+    </ul>
+  </article>
+
+  <footer style="background-color: #808080;">
+    <ul>
+      <li>
+        <a href="http://about.me/hyzhak">Created by Eugene Krevenets (aka Hyzhak)</a>
+        <img style="float: right" src="http://darlingjs.github.io/images/skateboard-128x128.jpg"/>
+      </li>
+      <li><a href="http://burenkaz.daportfolio.com">Art by Alena Krevenets (aka Burenka)</a></li>
+      <li><a href="/#">Stuff: Darling.js Sticker</a></li>
+      <li>Code licensed under the <a href="https://github.com/darlingjs/darlingjs/blob/master/LICENSE.md">Simplified BSD License</a></li>
+      <li><a href="/#">Back to top</a></li>
+    </ul>
+    <p class="copy-right">(C) 2013 Eugene Krevenets</p>
+  </footer>
+
+  <!--Social Code -->
+
+  <!-- G+ -->
+  <script type="text/javascript">
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
+
+  <!-- Twitter -->
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+  <!-- Twitter Follow.me -->
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1&appId=460658387336825";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</body>
+</html>
