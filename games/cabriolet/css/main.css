@@ -2,6 +2,10 @@ body {
     margin: 0;
 }
 
+ul {
+    font-size: 22px;
+}
+
 canvas {
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
