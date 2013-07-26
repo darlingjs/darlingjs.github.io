@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Darling.JS / html5 entity based game engine</title>
+  <title>Darling.JS - html5 entity, component, system based game engine</title>
 
-  <meta name="description" content="Darlingjs : Entity, Component, System based javascript game engine. With dependency injections and modular architecture. Inspired by Ash, AngularJS and CraftyJS" />
+  <meta name="description" content="Darlingjs : Entity, Component, System based javascript game engine. With dependency injections and modular architecture. Inspired by Ash, AngularJS and CraftyJS." />
   <link rel="shortcut icon" href="images/logo-oldschool.ico">
 
   <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css">
@@ -20,7 +20,7 @@
 
   <header id="header" class="section"  style="background-color: #F0F0F0;width: 100%;">
     <ul class="header-list">
-      <li class="header-list-item"><a href="https://github.com/darlingjs/darlingjs/wiki/Quick-Start">Quick Start</a></li>
+      <li class="header-list-item"><a href="#quick-start">Quick Start</a></li>
       <li class="header-list-item"><a href="http://darlingjs.github.io/docs/">Documentation</a></li>
       <li class="header-list-item"><a href="https://pressanykeytocreate.blogspot.com">Blog</a></li>
       <li class="header-list-item"><a href="https://github.com/darlingjs/darlingjs-examples">Examples</a></li>
@@ -59,6 +59,7 @@
         <p>Current state of project MVP, in next iteration I'll apply new visual design.</p>
       </li>
     </ul>
+    <div class="back-to-top"><a href="#header">Back to top</a></div>
   </article>
 
   <!--style="background-color: #D0D0D0;"-->
@@ -97,6 +98,7 @@
         <p>Use fluent interfaces (jQuery and <a href="http://craftyjs.com">CraftyJS</a> like). Support <a href="http://bower.io">Bower</a>. Node.js, Yeoman.io scaffolding is coming soon</p>
       </li>
     </ul>
+    <div class="back-to-top"><a href="#header">Back to top</a></div>
   </article>
 
   <!--style="background-color: #B0B0B0;"-->
@@ -113,6 +115,7 @@
       </ul>
       <a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/">and so on</a>
     </ul>
+    <div class="back-to-top"><a href="#header">Back to top</a></div>
   </article>
 
   <!--style="background-color: #A0A0A0;"-->
@@ -126,6 +129,7 @@
     <p><i>
       more tutorials is coming soon
     </i></p>
+    <div class="back-to-top"><a href="#header">Back to top</a></div>
   </article>
 
   <!--style="background-color: #909090;"-->
@@ -137,6 +141,7 @@
       <li><a href="https://twitter.com/Hyzhak_en">Twitter</a></li>
       <li><a href="https://pressanykeytocreate.blogspot.com">Blog</a></li>
     </ul>
+    <div class="back-to-top"><a href="#header">Back to top</a></div>
   </article>
 
   <!--style="background-color: #909090;"-->
@@ -161,10 +166,10 @@
           <img style="float: right" src="http://darlingjs.github.io/images/skateboard-128x128.jpg"/>
         </li>
         <li><a href="http://burenkaz.daportfolio.com">Art by Alena Krevenets (aka Burenka)</a></li>
-        <li><a href="/#">Stuff: Darling.js Sticker</a></li>
+        <li><a href="#header" class="back-to-top">Stuff: Darling.js Sticker</a></li>
         <li>Code licensed under the <a href="https://github.com/darlingjs/darlingjs/blob/master/LICENSE.md">Simplified BSD License</a></li>
       </ul>
-      <a href="/#">Back to top</a>
+      <div class="back-to-top"><a href="#header">Back to top</a></div>
       <p class="copy-right">(C) 2013 Eugene Krevenets</p>
     </div>
   </footer>
@@ -195,5 +200,58 @@
     js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1&appId=460658387336825";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));</script>
+
+  <!-- add for smooth scrolling -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      function filterPath(string) {
+      return string
+        .replace(/^\//,'')
+        .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
+        .replace(/\/$/,'');
+      }
+      var locationPath = filterPath(location.pathname);
+      var scrollElem = scrollableElement('html', 'body');
+     
+      $('a[href*=#]').each(function() {
+        var thisPath = filterPath(this.pathname) || locationPath;
+        if (  locationPath == thisPath
+        && (location.hostname == this.hostname || !this.hostname)
+        && this.hash.replace(/#/,'') ) {
+          var $target = $(this.hash), target = this.hash;
+          if (target) {
+            var targetOffset = $target.offset().top;
+            $(this).click(function(event) {
+              event.preventDefault();
+              $(scrollElem).animate({scrollTop: targetOffset}, 400, function() {
+                location.hash = target;
+              });
+            });
+          }
+        }
+      });
+     
+      // use the first element that is "scrollable"
+      function scrollableElement(els) {
+        for (var i = 0, argLength = arguments.length; i <argLength; i++) {
+          var el = arguments[i],
+              $scrollElement = $(el);
+          if ($scrollElement.scrollTop()> 0) {
+            return el;
+          } else {
+            $scrollElement.scrollTop(1);
+            var isScrollable = $scrollElement.scrollTop()> 0;
+            $scrollElement.scrollTop(0);
+            if (isScrollable) {
+              return el;
+            }
+          }
+        }
+        return [];
+      }
+     
+    });
+  </script>
 </body>
 </html>

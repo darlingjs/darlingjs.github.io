@@ -51,6 +51,12 @@ a:hover {
     color: #d00870;
 }
 
+
+.back-to-top {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
 /*old one*/
 
 .header-list {
