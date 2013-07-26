@@ -15,8 +15,9 @@ game.config(['$routeProvider', function($routeProvider) {
         when('/about',          {templateUrl: 'partials/about.html',        controller: 'AboutCtrl',        bgColor: 'rgb(0, 0, 0)'}).
         when('/game/:levelId',  {templateUrl: 'partials/game.html',         controller: 'GameCtrl',         bgColor: 'rgb(0, 0, 0)'}).
         otherwise({redirectTo: '/menu'});
-}]).run(['FacebookService', function(FacebookService) {
+}]).run(['FacebookService', 'DeviceService', function(FacebookService, DeviceService) {
     FacebookService.init('474902895931168', '/channel.html');
+    DeviceService.hideUrlBar();
 }]);
 
 game.controller('BodyCtrl', ['$scope', function($scope) {
@@ -40,17 +41,29 @@ game.controller('MainMenuCtrl', ['$scope', '$timeout', 'GameWorld', 'FacebookSer
     FacebookService.refreshDOM();
 
     $scope.isLogin = false;
+    $scope.isNeedToLogin = false;
     $scope.userName = "stranger";
     $scope.myScore = "unknown";
 
-    FacebookService.isLogin().then(function(result) {
-        $scope.isLogin = result;
+    function validate() {
+        FacebookService.isLogin().then(function(result) {
+            $scope.isLogin = result;
 
-        if (result) {
-            $scope.userName = FacebookService.getUserName();
-            $scope.myScore = FacebookService.getMyScore();
-        }
-    });
+            if (result) {
+                $scope.userName = FacebookService.getUserName();
+                $scope.myScore = FacebookService.getMyScore();
+                $scope.isNeedToLogin = false;
+            } else {
+                $scope.isNeedToLogin = true;
+            }
+        });
+    }
+
+    $scope.onLoginHandler = function() {
+        validate();
+    }
+
+    validate();
 }]);
 
 game.controller('MapCtrl', ['$scope', 'GameWorld', function($scope, GameWorld) {
