@@ -1,0 +1,27 @@
+{
+  "name": "darlingjs-particles",
+  "version": "0.0.0",
+  "main": [
+    "./particleSystem.js"
+  ],
+  "description": "darlingjs particle system module",
+  "keywords": [
+    "particles",
+    "darlingjs"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darlingjs/darlingjs-particle-module.git"
+  },
+  "gitHead": "615a9a6d88a382dabd983e92bdfc6a170a0f1b46",
+  "readme": "bower-particles-module\r\n======================\r\n\r\nBower package for the stable branch of particle system module\r\n",
+  "readmeFilename": "README.md",
+  "_id": "darlingjs-particles@0.7.0",
+  "commit": "615a9a6d88a382dabd983e92bdfc6a170a0f1b46"
+}

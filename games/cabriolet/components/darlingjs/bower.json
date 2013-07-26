@@ -1,0 +1,29 @@
+{
+  "name": "darlingjs",
+  "version": "0.0.0",
+  "main": [
+    "./darling.js",
+    "./darling.min.js"
+  ],
+  "description": "Component & Entity based javascript game engine. Decoupled from any visualization, physics, and so on. With injections and modules based on AngularJS.",
+  "keywords": [
+    "entity",
+    "gamedev",
+    "engine"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darlingjs/bower-darlingjs.git"
+  },
+  "gitHead": "cf875fa105d7c0ba6f978205ff73bfae27265ea2",
+  "readme": "bower-darlingjs\r\n===============\r\n\r\nBower package for the stable branch of DarlingJS\r\n",
+  "readmeFilename": "README.md",
+  "_id": "darlingjs@0.7.0",
+  "commit": "cf875fa105d7c0ba6f978205ff73bfae27265ea2"
+}

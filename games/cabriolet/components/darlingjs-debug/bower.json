@@ -1,0 +1,30 @@
+{
+  "name": "darlingjs-debug",
+  "version": "0.0.0",
+  "main": [
+    "./performance.js",
+    "./stats.js"
+  ],
+  "description": "darlingjs debug modules (stats.js, performance)",
+  "keywords": [
+    "debug",
+    "statsjs",
+    "performance",
+    "darlingjs"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darlingjs/darlingjs-debug-module.git"
+  },
+  "gitHead": "eef764dadf2079d43b72b4375667c0f6cb7640fe",
+  "readme": "darlingjs-debug-module\r\n======================\r\n\r\nBower package for the stable branch of debug modules (stats.js, performance)\r\n",
+  "readmeFilename": "README.md",
+  "_id": "darlingjs-debug@0.7.0",
+  "commit": "eef764dadf2079d43b72b4375667c0f6cb7640fe"
+}

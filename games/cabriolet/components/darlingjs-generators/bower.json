@@ -1,0 +1,27 @@
+{
+  "name": "darlingjs-generators",
+  "version": "0.0.0",
+  "main": [
+    "./infinity1D.js"
+  ],
+  "description": "darlingjs generators module",
+  "keywords": [
+    "generator",
+    "darlingjs"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darlingjs/bower-generators-module.git"
+  },
+  "gitHead": "5a7f6f1f869cb66a5b6f79138bdc979d8de03f97",
+  "readme": "bower-generators\r\n================\r\n\r\nBower package for the stable branch of generators\r\n",
+  "readmeFilename": "README.md",
+  "_id": "darlingjs-generators@0.7.0",
+  "commit": "5a7f6f1f869cb66a5b6f79138bdc979d8de03f97"
+}

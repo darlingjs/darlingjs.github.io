@@ -1,9 +1,17 @@
 body {
     margin: 0;
-}
+    color: #f7f7f7;
+    /*background-color: #0c0c0c;*/
+    font-family: calibri;
 
-ul {
-    font-size: 22px;
+    /* Firefox */
+    -moz-transition: all 1s ease-in;
+    /* WebKit */
+    -webkit-transition: all 1s ease-in;
+    /* Opera */
+    -o-transition: all 1s ease-in;
+    /* Standard */
+    transition: all 1s ease-in;
 }
 
 canvas {
@@ -16,6 +24,16 @@ canvas {
     -ms-interpolation-mode: nearest-neighbor;
 }
 
+.scoreboard {
+    background-color: #808080;
+    padding: 16px;
+}
+
+.fbLoginRequest {
+    padding: 4px;
+    background-color: #909090;
+}
+
 #gameView {
     position: relative;
     /*
@@ -24,6 +42,18 @@ canvas {
     position:relative;
     */
     /*z-index: -100;*/
+}
+
+.left-driving-arrow {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+}
+
+.right-driving-arrow {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
 }
 
 /* Desktop */
@@ -37,7 +67,6 @@ canvas {
         /*width: 640px;*/
     }
     .desktop {
-        visibility: visible;
     }
     .center {
         /*width: 640px;*/
@@ -149,9 +178,7 @@ canvas {
         height: 300px;
     }
     .desktop {
-        visibility: hidden;
-        height: 0px;
-        width: 0px;
+        display: none;
     }
     body {
         overflow-x: hidden;
@@ -230,12 +257,6 @@ h1 {
     font-family: 'Lobster', cursive; font-weight: 400;
 }
 
-body {
-    background-color: #0c0c0c;
-    color: #f7f7f7;
-    font-family: calibri;
-}
-
 a:link {
     color: #ff315f;
 }
@@ -252,46 +273,72 @@ a:active {
     color: #ff537b;
 }
 
-.page {
-    float: left;
-}
-
 .page-container {
     /*position:relative;
     width: 640px;*/
 }
 
 .page-enter, .page-leave {
-    -webkit-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
-    -moz-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
-    -o-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
-    transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+    -webkit-transition: -webkit-transform .2s cubic-bezier(0.26,0.405,0.355,1);
+    -moz-transition: -moz-transform .2s cubic-bezier(0.26,0.405,0.355,1);
+    -ms-transition: -ms-transform .2s cubic-bezier(0.26,0.405,0.355,1);
+    -o-transition: -o-transform .2s cubic-bezier(0.26,0.405,0.355,1);
+}
+
+.page {
+    /*float: left;*/
+    -webkit-transform:translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .page-enter, .page-leave, .page-enter-active, .page-leave-active {
-    position:relative;
-    margin-right: -100%;
-    float: left;
+    position:absolute;
+    /*margin-right: -100%;*/
+    /*-webkit-transform: translateX(500px) translateZ(0);*/
+    /*float: left;*/
 }
 
 .page-enter {
-    left:100px;
-    opacity: 0;
+    /*left:100px;*/
+    -webkit-transform: translateX(500px) translateZ(0);
+    -moz-transform: translateX(500px) translateZ(0);
+    -ms-transform: translateX(500px) translateZ(0);
+    -o-transform: translateX(500px) translateZ(0);
+    transform: translateX(500px) translateZ(0);
+    /*opacity: 0;*/
 }
 
 .page-enter-active {
-    left: 0;
-    opacity: 1;
+    /*left: 0;*/
+    -webkit-transform: translateX(0px) translateZ(0);
+    -moz-transform: translateX(0px) translateZ(0);
+    -ms-transform: translateX(0px) translateZ(0);
+    -o-transform: translateX(0px) translateZ(0);
+    transform: translateX(0px) translateZ(0);
+    /*opacity: 1;*/
 }
 
 .page-leave {
-    left:0;
-    opacity: 1;
+    -webkit-transform: translateX(0px) translateZ(0);
+    -moz-transform: translateX(0px) translateZ(0);
+    -ms-transform: translateX(0px) translateZ(0);
+    -o-transform: translateX(0px) translateZ(0);
+    transform: translateX(0px) translateZ(0);
+    /*left:0;*/
+    /*opacity: 1;*/
 }
 
 .page-leave-active {
-    left:-100px;
-    opacity: 0;
+    /*left:-100px;*/
+    -webkit-transform: translateX(-500px) translateZ(0);
+    -moz-transform: translateX(-500px) translateZ(0);
+    -ms-transform: translateX(-500px) translateZ(0);
+    -o-transform: translateX(-500px) translateZ(0);
+    transform: translateX(-500px) translateZ(0);
+    /*opacity: 0;*/
 }
 
 .footer {
@@ -307,39 +354,68 @@ a:active {
 }
 
 .game-info-enter, .game-info-leave, .game-info-enter-active, .game-info-leave-active {
-    position:relative;
+    position:absolute;
+    /*position:relative;
     margin-right: -300px;
-    float: left;
+    float: left;*/
 }
 
 .game-info-enter, .game-info-leave {
-    -webkit-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
-    -moz-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
-    -o-transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
-    transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.5s;
+    -webkit-transition: -webkit-transform 10.2s cubic-bezier(0.26,0.405,0.355,1);
+    -moz-transition: -moz-transform 10.2s cubic-bezier(0.26,0.405,0.355,1);
+    -ms-transition: -ms-transform 10.2s cubic-bezier(0.26,0.405,0.355,1);
+    -o-transition: -o-transform 10.2s cubic-bezier(0.26,0.405,0.355,1);
 }
 
 .game-info-enter {
-    position:relative;
-    top:-100px;
+    /*position:relative;
+    top:-100px;*/
+
+    -webkit-transform: translateY(-100px) translateZ(0);
+    -moz-transform: translateY(-100px) translateZ(0);
+    -ms-transform: translateY(-100px) translateZ(0);
+    -o-transform: translateY(-100px) translateZ(0);
+    transform: translateY(-100px) translateZ(0);
+
     opacity: 0;
 }
 
 .game-info-enter-active {
-    position:relative;
-    top:0;
+    /*position:relative;
+    top:0;*/
+
+    -webkit-transform: translateY(0px) translateZ(0);
+    -moz-transform: translateY(0px) translateZ(0);
+    -ms-transform: translateY(0px) translateZ(0);
+    -o-transform: translateY(0px) translateZ(0);
+    transform: translateY(0px) translateZ(0);
+
     opacity: 1;
 }
 
 .game-info-leave {
-    position:relative;
-    top:0;
+    /*position:relative;
+    top:0;*/
+
+    -webkit-transform: translateY(0px) translateZ(0);
+    -moz-transform: translateY(0px) translateZ(0);
+    -ms-transform: translateY(0px) translateZ(0);
+    -o-transform: translateY(0px) translateZ(0);
+    transform: translateY(0px) translateZ(0);
+
     opacity: 1;
 }
 
 .game-info-leave-active {
-    position:relative;
-    top:100px;
+    /*position:relative;
+    top:100px;*/
+
+    -webkit-transform: translateY(100px) translateZ(0);
+    -moz-transform: translateY(100px) translateZ(0);
+    -ms-transform: translateY(100px) translateZ(0);
+    -o-transform: translateY(100px) translateZ(0);
+    transform: translateY(100px) translateZ(0);
+
     opacity: 0;
 }
 

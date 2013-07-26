@@ -5,28 +5,52 @@
 
 var version = '0.2';
 
-var game = angular.module('RedCabrioletGame', ['LocalStorageModule']);
+var game = angular.module('RedCabrioletGame', ['LocalStorageModule', 'GameFBModule']);
 game.config(['$routeProvider', function($routeProvider) {
     $routeProvider.
-        when('/menu',           {templateUrl: 'partials/menu.html',     controller: 'MainMenuCtrl'}).
-        when('/map',            {templateUrl: 'partials/map.html',      controller: 'MapCtrl'}).
-        when('/status',         {templateUrl: 'partials/status.html',   controller: 'StatusCtrl'}).
-        when('/about',          {templateUrl: 'partials/about.html',    controller: 'AboutCtrl'}).
-        when('/game/:levelId',  {templateUrl: 'partials/game.html',     controller: 'GameCtrl'}).
+        when('/menu',           {templateUrl: 'partials/menu.html',         controller: 'MainMenuCtrl',     bgColor: '#2B82B0'}).
+        when('/map',            {templateUrl: 'partials/map.html',          controller: 'MapCtrl',          bgColor: '#8D395F'}).
+        when('/status',         {templateUrl: 'partials/status.html',       controller: 'StatusCtrl',       bgColor: '#2B82B0'}).
+        when('/scoreboard',     {templateUrl: 'partials/scoreboard.html',   controller: 'ScoreboardCtrl',   bgColor: '#2B82B0'}).
+        when('/about',          {templateUrl: 'partials/about.html',        controller: 'AboutCtrl',        bgColor: 'rgb(0, 0, 0)'}).
+        when('/game/:levelId',  {templateUrl: 'partials/game.html',         controller: 'GameCtrl',         bgColor: 'rgb(0, 0, 0)'}).
         otherwise({redirectTo: '/menu'});
+}]).run(['FacebookService', function(FacebookService) {
+    FacebookService.init('474902895931168', '/channel.html');
+}]);
+
+game.controller('BodyCtrl', ['$scope', function($scope) {
+    $scope.$on('$routeChangeSuccess', routeChangeSuccessHandler);
+    function routeChangeSuccessHandler(scope, next, current) {
+        googleAnalytics('send', 'pageview');
+        if (next && next.$$route && next.$$route.bgColor) {
+            $scope.bodyStyle = {
+                'background-color': next.$$route.bgColor
+            };
+        }
+    }
 }]);
 
 game.controller('HeaderCtrl', ['$scope', function($scope) {
     $scope.version = version;
-
-    $scope.$on('$routeChangeSuccess', sendGoogleAnalyticsPageView);
-    function sendGoogleAnalyticsPageView() {
-        googleAnalytics('send', 'pageview');
-    }
 }]);
 
-game.controller('MainMenuCtrl', ['$scope', 'GameWorld', function($scope, GameWorld) {
+game.controller('MainMenuCtrl', ['$scope', '$timeout', 'GameWorld', 'FacebookService', function($scope, $timeout, GameWorld, FacebookService) {
     GameWorld.stop();
+    FacebookService.refreshDOM();
+
+    $scope.isLogin = false;
+    $scope.userName = "stranger";
+    $scope.myScore = "unknown";
+
+    FacebookService.isLogin().then(function(result) {
+        $scope.isLogin = result;
+
+        if (result) {
+            $scope.userName = FacebookService.getUserName();
+            $scope.myScore = FacebookService.getMyScore();
+        }
+    });
 }]);
 
 game.controller('MapCtrl', ['$scope', 'GameWorld', function($scope, GameWorld) {
@@ -35,6 +59,13 @@ game.controller('MapCtrl', ['$scope', 'GameWorld', function($scope, GameWorld) {
 
 game.controller('AboutCtrl', ['$scope', 'GameWorld', function($scope, GameWorld) {
     GameWorld.stop();
+}]);
+
+game.controller('ScoreboardCtrl', ['$scope', 'GameWorld', 'FacebookService', function($scope, GameWorld, FacebookService) {
+    GameWorld.stop();
+    $scope.clearMyScore = function() {
+        FacebookService.setMyScore(0);
+    };
 }]);
 
 game.controller('MapCtrl', ['$scope', 'GameWorld', 'Player', function($scope, GameWorld, Player) {

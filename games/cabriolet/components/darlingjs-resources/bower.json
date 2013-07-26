@@ -1,0 +1,28 @@
+{
+  "name": "darlingjs-resources",
+  "version": "0.0.0",
+  "main": [
+    "./resources.js"
+  ],
+  "description": "darlingjs resources module",
+  "keywords": [
+    "resources",
+    "loader",
+    "darlingjs"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darlingjs/bower-resources-module.git"
+  },
+  "gitHead": "86756e4d252f590ace87089b6f34915caa588ea7",
+  "readme": "bower-resources-module\r\n======================\r\n\r\nBower package for the stable branch of resources module\r\n",
+  "readmeFilename": "README.md",
+  "_id": "darlingjs-resources@0.7.0",
+  "commit": "86756e4d252f590ace87089b6f34915caa588ea7"
+}

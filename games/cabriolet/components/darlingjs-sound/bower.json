@@ -1,0 +1,28 @@
+{
+  "name": "darlingjs-sound",
+  "version": "0.0.0",
+  "main": [
+    "./particleSystem.js"
+  ],
+  "description": "darlingjs sound module",
+  "keywords": [
+    "howler",
+    "sound",
+    "darlingjs"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darlingjs/darlingjs-sound-module.git"
+  },
+  "gitHead": "b3146f16b4bea50690a90d03e1935965c53460d5",
+  "readme": "sound-module\r\n============\r\n\r\nBower package for the stable branch of sound module (base module sound and howler.js adapter)\r\n",
+  "readmeFilename": "README.md",
+  "_id": "darlingjs-sound@0.7.0",
+  "commit": "b3146f16b4bea50690a90d03e1935965c53460d5"
+}

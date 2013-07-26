@@ -1,0 +1,29 @@
+{
+  "name": "darlingjs-pixijs",
+  "version": "0.0.0",
+  "main": [
+    "./pixiAdapter.js"
+  ],
+  "description": "darlingjs pixi.js adapter module",
+  "keywords": [
+    "renderer",
+    "webgl",
+    "canvas",
+    "darlingjs"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darlingjs/bower-pixi.js-module.git"
+  },
+  "gitHead": "2829eea3565253c9b613628245292112c50c8417",
+  "readme": "bower-pixi.js-module\r\n====================\r\n\r\nBower package for the stable branch of pixi.js darlingjs module\r\n",
+  "readmeFilename": "README.md",
+  "_id": "darlingjs-pixijs@0.7.0",
+  "commit": "2829eea3565253c9b613628245292112c50c8417"
+}

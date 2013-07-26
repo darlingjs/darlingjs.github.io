@@ -1,0 +1,31 @@
+{
+  "name": "darlingjs-box2d.js",
+  "version": "0.0.0",
+  "main": [
+    "./box2dEmscriptenAdapter.js",
+    "./box2d.js",
+    "./box2d-dev.js",
+    "./embox2d-html5canvas-debugDraw.js"
+  ],
+  "description": "darlingjs module - adapter for box2d.js (emscripten)",
+  "keywords": [
+    "physic",
+    "box2d",
+    "darlingjs"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darlingjs/bower-box2d.js-module.git"
+  },
+  "gitHead": "aa558d4b9bd5cee2d0c6f72fed1cabbc7a9fd84c",
+  "readme": "bower-box2d.js-module\r\n=====================\r\n\r\nBower package for the stable branch of box2d.js (emscripten) module\r\n",
+  "readmeFilename": "README.md",
+  "_id": "darlingjs-box2d.js@0.7.0",
+  "commit": "aa558d4b9bd5cee2d0c6f72fed1cabbc7a9fd84c"
+}

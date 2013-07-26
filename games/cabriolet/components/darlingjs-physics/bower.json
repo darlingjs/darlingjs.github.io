@@ -1,0 +1,27 @@
+{
+  "name": "darlingjs-physics",
+  "version": "0.0.0",
+  "main": [
+    "./physics.js"
+  ],
+  "description": "darlingjs physics module",
+  "keywords": [
+    "physic",
+    "darlingjs"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darlingjs/bower-physics-module.git"
+  },
+  "gitHead": "415c0e337671eee6a70d0cd13c9b3ba22363829b",
+  "readme": "bower-physics-module\r\n====================\r\n\r\nBower package for the stable branch of physics module\r\n",
+  "readmeFilename": "README.md",
+  "_id": "darlingjs-physics@0.7.0",
+  "commit": "415c0e337671eee6a70d0cd13c9b3ba22363829b"
+}

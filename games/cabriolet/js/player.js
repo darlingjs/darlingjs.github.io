@@ -28,7 +28,11 @@ game.factory('Player', ['Levels', 'localStorageService', function(Levels, localS
     levelAPI.passed = false;
     levelAPI.available = false;
 
-    playedLevels = JSON.parse(localStorageService.get(playedLevelsLocalStorageKey));
+    try {
+        playedLevels = localStorageService.get(playedLevelsLocalStorageKey);
+    } catch(e) {
+
+    }
 
     if (!playedLevels) {
         clear();
@@ -42,7 +46,8 @@ game.factory('Player', ['Levels', 'localStorageService', function(Levels, localS
     function getScore() {
         var result = 0;
         for (var i = 0, count = playedLevels.length; i < count; i++) {
-            result += playedLevels[i].score;
+            var score = playedLevels[i].maxScore;
+            result += isNaN(score)?0:score;
         }
         return result;
     }
@@ -84,9 +89,15 @@ game.factory('Player', ['Levels', 'localStorageService', function(Levels, localS
         for (var i = 0, count = Levels.numLevels(); i < count; i++) {
             var level = Levels.getLevelAt(i);
             var playedLevel = playedLevels[i];
-            level.maxScore = playedLevel.maxScore;
-            level.available = playedLevel.available;
-            level.passed = playedLevel.passed;
+            if (playedLevel) {
+                level.maxScore = playedLevel.maxScore;
+                level.available = playedLevel.available;
+                level.passed = playedLevel.passed;
+            } else {
+                level.maxScore = 0;
+                level.available = false;
+                level.passed = false;
+            }
         }
 
         return Levels.getLevels();
