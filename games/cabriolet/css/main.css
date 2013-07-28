@@ -56,6 +56,13 @@ canvas {
     right: 8px;
 }
 
+
+.menu-button-in-game-placement {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+}
+
 /* Desktop */
 @media (min-width: 641px) {
     .header {
@@ -91,11 +98,6 @@ canvas {
         height: 480px;
     }
 
-    .menu-button-in-game-placement {
-        position: absolute;
-        top: 4px;
-        left: 100px;
-    }
 
     .life-in-game-placement {
         position: absolute;
@@ -193,15 +195,6 @@ canvas {
     .page-content {
         margin-top: -300px;
         height: 300px;
-    }
-
-    .menu-button-in-game-placement {
-        position: absolute;
-        top: 4px;
-        left: 100px;
-        /*top: 20px;
-        left: 100px;
-        position: absolute;*/
     }
 
     .life-in-game-placement {

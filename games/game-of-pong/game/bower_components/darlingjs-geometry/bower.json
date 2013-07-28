@@ -1,0 +1,26 @@
+{
+  "name": "darlingjs-geometry",
+  "version": "0.7.0",
+  "main": [
+    "./flatland.js",
+    "./3d.js",
+    "./cyclic.js"
+  ],
+  "description": "darlingjs geometry modules (2D, 3D and cyclic)",
+  "keywords": [
+    "geometry",
+    "2D",
+    "3D",
+    "darlingjs"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:darlingjs/bower-geomerty-module.git"
+  }
+}
