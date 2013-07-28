@@ -4,20 +4,6 @@
   </canvas>
 
   <div id="gameUI" class="background-image-size">
-    <div class="sound-button-in-game-placement">
-      <button ng-click="soundSwitch()">sound {{soundStateSwitchTo}}</button>
-      <button ng-click="pause()">pause {{paused}}</button>
-    </div>
-
-    <img src="img/left-arrow-active.png" width="48" height="48" ng-show="drivingLeft" class="left-driving-arrow"/>
-    <img src="img/left-arrow.png" width="48" height="48" ng-hide="drivingLeft" class="left-driving-arrow"/>
-    <img src="img/right-arrow-active.png" width="48" height="48" ng-show="drivingRight" class="right-driving-arrow"/>
-    <img src="img/right-arrow.png" width="48" height="48" ng-hide="drivingRight" class="right-driving-arrow"/>
-
-    <div class="menu-button-in-game-placement"><a href="#/menu/">menu</a></div>
-    <div class="life-in-game-placement">Life: {{life}}</div>
-    <div class="score-in-game-placement">Score: {{score}}</div>
-
     <div style="display: table; position: absolute" class="background-image-size">
       <div ng-switch="gameState" class="game-info-panel">
         <div ng-animate="'game-info'">
@@ -32,6 +18,15 @@
               <p>Press any key to play!</p>
             </div>
           </div>
+          <div ng-switch-when="game-paused" class="game-info game-view-width">
+            <h1>Pause</h1>
+            <ul>
+              <li>Just use Left/Right to ride the car.</li>
+              <li>You need avoid the rain.</li>
+            </ul>
+            <a href="#/menu">Menu</a>
+            <a href="" ng-click="resume()">Resume</a>
+          </div>
           <div ng-switch-when="game-completed" class="game-info game-view-width">
             <h1>Level Complete</h1>
             <p>Got scores: {{score}}</p>
@@ -42,7 +37,7 @@
             <h1>Level Complete</h1>
             <p>Got scores: {{score}}</p>
             <div>
-              <h2>Scoreboard</h2>
+              <!--<h2>Scoreboard</h2>-->
               <fb-scoreboard ask-to-login on-login="onLogin()"></fb-scoreboard>
               <div ng-hide="isLogin">
                 <p>To store scores you need be login to game by Facebook account</p>
@@ -61,5 +56,22 @@
         </div>
       </div>
     </div>
+
+    <div class="sound-button-in-game-placement">
+      <button ng-click="soundSwitch()">sound {{soundStateSwitchTo}}</button>
+      <!--<button ng-click="pause()">pause {{paused}}</button>-->
+    </div>
+
+    <img src="img/left-arrow-active.png" width="48" height="48" ng-show="drivingLeft" class="left-driving-arrow"/>
+    <img src="img/left-arrow.png" width="48" height="48" ng-hide="drivingLeft" class="left-driving-arrow"/>
+    <img src="img/right-arrow-active.png" width="48" height="48" ng-show="drivingRight" class="right-driving-arrow"/>
+    <img src="img/right-arrow.png" width="48" height="48" ng-hide="drivingRight" class="right-driving-arrow"/>
+
+    <div class="menu-button-in-game-placement">
+      <button ng-click="pause()">Pause</button>
+    </div>
+    <div class="life-in-game-placement">Life: {{life}}</div>
+    <div class="score-in-game-placement">Score: {{score}}</div>
+
   </div>
 </div>
