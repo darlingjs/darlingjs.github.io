@@ -25,7 +25,7 @@
       <li class="header-list-item"><a href="#quick-start">Quick Start</a></li>
       <li class="header-list-item"><a href="http://darlingjs.github.io/docs/">Documentation</a></li>
       <li class="header-list-item"><a href="https://pressanykeytocreate.blogspot.com">Blog</a></li>
-      <li class="header-list-item"><a href="https://github.com/darlingjs/darlingjs-examples">Examples</a></li>
+      <li class="header-list-item"><a href="#showcases">Examples</a></li>
       <li class="header-list-item"><a href="#modules">Modules</a></li>
       <!--TODO : <li class="header-list-item">Donate</li>-->
     </ul></header>
@@ -45,8 +45,8 @@
   </article>
 
   <!--style="background-color: #C0C0C0;"-->
-  <article id="showcase" class="section">
-    <h1>Showcase</h1>
+  <article id="showcases" class="section">
+    <h1>Showcases</h1>
     <ul>
       <li>
         <span class="demo-title"><a href="games/cabriolet/">Red Cabriolet</a> with <a href="https://github.com/darlingjs/darlingjs-examples/tree/master/04-box2d-simulation-of-vehicle">sources</a></span>
@@ -60,6 +60,13 @@
         <p>Also was used <a href="http://angularjs.org/">Angular.js</a> for creating game like single page app.</p>
         <p>Current state of project MVP, in next iteration I'll apply new visual design.</p>
       </li>
+      <li>
+        <span class="demo-title"><a href="games/game-of-pong/">Game of Pong</a> with <a href="https://github.com/darlingjs/darlingjs-examples/tree/master/04-box2d-simulation-of-vehicle">sources</a></span>
+        <br/>
+        <a href="games/game-of-pong/"><img width="400" height="300"  src="https://lh4.googleusercontent.com/-gt9gA0Jj8OU/UfUbonxYcVI/AAAAAAAAfpA/olelPaql_4Y/s0/2013-07-28_15-24-49.png"/></a>
+        <p>Game developed almost without any additional modules. It's heavily based on <a href="http://craftyjs.com/tutorial/getting-started/how-crafty-works">CraftyJs example</a>, but unlike it almost all logic are user code based. That shows how to deal with your own modules, systems and components.</p>
+      </li>
+      <li><a href="https://github.com/darlingjs/darlingjs-examples/">Get More on Github</a></li>
     </ul>
     <div class="back-to-top"><a href="#header">Back to top</a></div>
   </article>
@@ -107,15 +114,13 @@
   <article id="modules" class="section">
     <h1>Modules</h1>
     <ul class="modules-list">
-      <ul>
         <li><a href="https://github.com/darlingjs/darlingjs-box2d.js-module"><span class="module-title">Emscripten Box2d Adapter</span></a> - Physics simulation</li>
         <li><a href="https://github.com/darlingjs/darlingjs-pixi.js-module"><span class="module-title">Pixi.js Adapter</span></a> - Renderer Engine (WebGL, Canvas 2D)</li>
         <li><a href="https://github.com/darlingjs/darlingjs-sound-module"><span class="module-title">Howler.js Adapter</span></a> - Web Sound (support org, mp3)</li>
         <li><a href="https://github.com/darlingjs/darlingjs-resources-module"><span class="module-title">Asset Loader</span></a> - To control loading of sprites and sounds</li>
         <li><a href="https://github.com/darlingjs/darlingjs-geometry-module"><span class="module-title">2D and 3D</span></a> - Parallax effect, cycling backgrounds and other</li>
         <li><a href="https://github.com/darlingjs/darlingjs-debug-module"><span class="module-title">Stats.js Adapter</span></a> - To monitor game performance</li>
-      </ul>
-      <a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/">and so on</a>
+        <li><a href="https://github.com/darlingjs/darlingjs/tree/master/src/extensions/">and so on</a></li>
     </ul>
     <div class="back-to-top"><a href="#header">Back to top</a></div>
   </article>
@@ -202,6 +207,54 @@
     js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1&appId=460658387336825";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));</script>
+
+  <!-- Google Analytics -->
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-38043860-3', 'darlingjs.github.io');
+    ga('send', 'pageview');
+
+    window.onerror = function(msg, url, line) {
+      var preventErrorAlert = true;
+      ga('send', 'event', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line, line);
+      console.log('send event JS Error ' + msg + ' ' + navigator.userAgent + ' -> ' + url + " : " + line);
+      return preventErrorAlert;
+    };
+  </script>
+
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function (d, w, c) {
+      (w[c] = w[c] || []).push(function() {
+        try {
+          w.yaCounter21802681 = new Ya.Metrika({id:21802681,
+            webvisor:true,
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            trackHash:true});
+        } catch(e) { }
+      });
+
+      var n = d.getElementsByTagName("script")[0],
+          s = d.createElement("script"),
+          f = function () { n.parentNode.insertBefore(s, n); };
+      s.type = "text/javascript";
+      s.async = true;
+      s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+      if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f, false);
+      } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+  </script>
+  <noscript><div><img src="//mc.yandex.ru/watch/21802681" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
 
   <!-- add for smooth scrolling -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>

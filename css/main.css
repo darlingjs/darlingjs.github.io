@@ -47,6 +47,10 @@ body {
     background-color: #E0E0E0;
 }
 
+ul>li {
+    margin: 32px 0;
+}
+
 a:hover {
     color: #d00870;
 }

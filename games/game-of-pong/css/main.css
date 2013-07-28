@@ -27,7 +27,20 @@ body {
     color: white;
 }
 
-.game {
-    width: 600px;
-    margin: 64px auto;
+/* Desktop */
+@media (min-width: 641px) {
+    .game {
+        width: 600px;
+        height: 300px;
+        margin: 64px auto;
+    }
+}
+
+/* Mobile */
+@media (max-width: 641px) {
+    .game {
+        width: 400px;
+        height: 300px;
+        margin: 64px auto;
+    }
 }
