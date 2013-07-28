@@ -1,11 +1,4 @@
-/**
- * TODO:
- * window.innerWidth and window.innerHeight === 0 inside iFrame at 1st moment.
- * Need to wait a moment to get them
- */
-setTimeout(init, 1000);
-
-function init() {
+(function() {
     'use strict';
 
     var world = darlingjs.world('pong',
@@ -13,25 +6,29 @@ function init() {
                 'controlModule',
                 'physicsModule',
                 'gamePlayModule']),
-        aspectRatio = 2;
+        aspectRatio = 2,
+    /**
+     * window.innerWidth and window.innerHeight === 0 inside iFrame at 1st moment.
+     * Need to get size from documentElement
+     */
+        windowWidth = document.documentElement.clientWidth,
+        windowHeight = document.documentElement.clientHeight;
 
     /**
      * fit to screen with aspect
      */
-    if (window.innerWidth < aspectRatio * window.innerHeight) {
-        var width = window.innerWidth,
-            height = window.innerWidth / aspectRatio;
+    if (windowWidth < aspectRatio * windowHeight) {
+        var width = windowWidth,
+            height = windowWidth / aspectRatio;
     } else {
-        var width = aspectRatio * window.innerHeight,
-            height = window.innerHeight;
+        var width = aspectRatio * windowHeight,
+            height = windowHeight;
     }
-
-    console.log('width ' + width);
-    console.log('height ' + height);
 
     // add view renderer system
 
     world.$add('domViewRenderer', {
+        //target div element
         target: '#gameStage',
         width: width,
         height: height,
@@ -61,21 +58,25 @@ function init() {
         width: width,
         height: height,
 
+        //target DOM element for player 1 score output
         player1TargetElement: '#playerScore1',
+
+        //target DOM element for player 2 score output
         player2TargetElement: '#playerScore2'
     });
 
 
     // build game scene
 
-    var paddleHeight = 50;
+    var paddleHeight = height/3;
+    if (paddleHeight > 100) paddleHeight = 100;
     world.$e('LeftPaddle', {
         domView: {color: 'rgb(255,0,0)'},
         ng2D: {x: 20, y: height / 2},
-        ng2DSize: {width: 10, height: 100},
+        ng2DSize: {width: 10, height: paddleHeight},
         control: {
             up: 87 /* W */, down: 83 /* S */,
-            maxY: height - paddleHeight, minY: paddleHeight,
+            maxY: height - paddleHeight/2, minY: paddleHeight/2,
             speed: 4
         },
         solid: {
@@ -86,10 +87,10 @@ function init() {
     world.$e('RightPaddle', {
         domView: {color: 'rgb(0,255,0)'},
         ng2D: {x: width - 20, y: height / 2},
-        ng2DSize: {width: 10, height: 100},
+        ng2DSize: {width: 10, height: paddleHeight},
         control: {
             up: 38 /* arrow up */, down: 40 /* arrow down */,
-            maxY: height - paddleHeight, minY: paddleHeight,
+            maxY: height - paddleHeight/2, minY: paddleHeight/2,
             speed: 4
         },
         solid: {
@@ -99,7 +100,6 @@ function init() {
 
 
     //throw the ball
-
     var angle = Math.PI * Math.random(),
         power = 5;
 
@@ -125,4 +125,4 @@ function init() {
     //Ready, Steady, Go!
 
     world.$start();
-};
+})();
