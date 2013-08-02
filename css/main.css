@@ -2,7 +2,7 @@
 
 .section {
     max-width: 800px;
-    min-width: 360px;
+    /*min-width: 360px;*/
     margin: auto;
 }
 
@@ -104,4 +104,29 @@ a:hover {
 .demo-title {
     font-size: larger;
     font-weight: bold;
+}
+
+/* Desktop */
+@media (min-width: 641px) {
+    .download-btns {
+        float: right;
+    }
+    .github-btn {
+        float: left;
+    }
+}
+
+/* Mobile */
+@media (max-width: 641px) {
+    .download-btns {
+        margin: 0 auto;
+        width: 200px;
+    }
+    .github-btn {
+        margin: 0 auto;
+        width: 126px;
+    }
+    .banner {
+        width: 100%;
+    }
 }
