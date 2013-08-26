@@ -68,6 +68,7 @@
       })(window,document,'script','//www.google-analytics.com/analytics.js','googleAnalytics');
 
       googleAnalytics('create', 'UA-38043860-3', 'github.io');
+      googleAnalytics('set', 'siteSpeedSampleRate', 100);
       googleAnalytics('send', 'pageview');
 
       window.onerror = function(msg, url, line) {
