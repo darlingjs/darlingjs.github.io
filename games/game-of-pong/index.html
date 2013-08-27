@@ -101,8 +101,9 @@
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-38043860-3', 'darlingjs.github.io');
-  ga('set', 'siteSpeedSampleRate', 100);
+  ga('create', 'UA-38043860-3', {
+        'siteSpeedSampleRate': 100
+      });
   ga('send', 'pageview');
 
   window.onerror = function(msg, url, line) {

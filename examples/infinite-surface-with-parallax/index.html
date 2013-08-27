@@ -66,8 +66,9 @@
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','googleAnalytics');
 
-      googleAnalytics('create', 'UA-38043860-3', 'github.io');
-      googleAnalytics('set', 'siteSpeedSampleRate', 100);
+      googleAnalytics('create', 'UA-38043860-3', {
+        'siteSpeedSampleRate': 100
+      });
       googleAnalytics('send', 'pageview');
 
       window.onerror = function(msg, url, line) {

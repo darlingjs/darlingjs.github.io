@@ -86,9 +86,9 @@
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','//www.google-analytics.com/analytics.js','googleAnalytics');
 
-    googleAnalytics('create', 'UA-38043860-4');
-
-    googleAnalytics('set', 'siteSpeedSampleRate', 100);
+    googleAnalytics('create', 'UA-38043860-4', {
+        'siteSpeedSampleRate': 100
+    });
 
     googleAnalytics('send', 'pageview');
 
