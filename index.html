@@ -6,7 +6,7 @@
   <meta name="description" content="Darlingjs : Entity, Component, System based javascript game engine. With dependency injections and modular architecture. Inspired by Ash, AngularJS and CraftyJS." />
   <link rel="shortcut icon" href="images/logo-oldschool.ico">
 
-  <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" media="screen" href="css/main.css">
 
   <link rel="image_src" href="http://darlingjs.github.io/images/logo-oldschool.png" />
@@ -23,7 +23,7 @@
   <a href="https://github.com/darlingjs/darlingjs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 
 
-  <header id="header" class="section"  style="background-color: #F0F0F0;width: 100%;">
+  <header id="header" class="section desktop"  style="background-color: #F0F0F0;width: 100%;">
     <ul class="header-list">
       <li class="header-list-item"><a href="#quick-start">Quick Start</a></li>
       <li class="header-list-item"><a href="http://darlingjs.github.io/docs/">Documentation</a></li>
@@ -35,8 +35,9 @@
 
   <!--style="background-color: #E0E0E0;"-->
   <article class="banner-section section">
-    <div class="banner" >
-      <img src="images/logo-oldschool.png" width="400" height="230"/>
+    <div class="banner">
+      <img src="images/logo-oldschool.png" class="article-image"/>
+      <!-- width="400" height="230" -->
     </div>
     <p class="engine-moto"><b>Darling.js</b> - Entity-Component-System based javascript game engine with dependency injections and modules. Create games flexible.</p>
     <div class="github-btn">
@@ -57,8 +58,8 @@
         <span class="demo-title"><a href="games/cabriolet/">Red Cabriolet</a> with <a href="https://github.com/darlingjs/darlingjs-examples/tree/master/04-box2d-simulation-of-vehicle">sources</a></span>
         <br/>
         <a href="games/cabriolet/">
-          <div style="max-width: 100%">
-            <img height="300"  src="https://lh4.googleusercontent.com/--BwdjZS5wZk/UXLxxVdcZuI/AAAAAAAAaac/ktkB6nzgF3I/s0/2013-04-20_21-31-27.png"/>
+          <div>
+            <img class="article-image" src="https://lh4.googleusercontent.com/--BwdjZS5wZk/UXLxxVdcZuI/AAAAAAAAaac/ktkB6nzgF3I/s0/2013-04-20_21-31-27.png"/>
           </div>
         </a>
         <p>
@@ -73,8 +74,8 @@
         <span class="demo-title"><a href="games/game-of-pong/">Game of Pong</a> with <a href="https://github.com/darlingjs/darlingjs-examples/tree/master/04-box2d-simulation-of-vehicle">sources</a></span>
         <br/>
         <a href="games/game-of-pong/">
-          <div style="max-width: 100%">
-            <img height="300px" src="img/pong-game.png" />
+          <div>
+            <img class="article-image" src="img/pong-game.png" />
           </div>
         </a>
         <p>Game developed almost without any additional modules. It's heavily based on <a href="http://craftyjs.com/tutorial/getting-started/how-crafty-works">CraftyJs example</a>, but unlike it almost all logic are user code based. That shows how to deal with your own modules, systems and components.</p>
